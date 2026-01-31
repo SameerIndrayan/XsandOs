@@ -1,18 +1,11 @@
-# XsandOs Backend
+# Football Annotation System - Backend
 
-Backend service for video annotation using Gemini Vision API. Accepts football video uploads, extracts sampled frames, and returns JSON annotations with player positions and educational annotations.
+Node.js + TypeScript Express server for football video annotation with Gemini Vision API integration.
 
 ## Prerequisites
 
-- **Node.js 20+** - [Download](https://nodejs.org/)
-- **ffmpeg** - Required for video processing
-  ```bash
-  # macOS (Homebrew)
-  brew install ffmpeg
-  
-  # Verify installation
-  ffmpeg -version
-  ```
+- **Node.js 20+**
+- **npm** or **yarn**
 
 ## Setup
 
@@ -21,193 +14,194 @@ Backend service for video annotation using Gemini Vision API. Accepts football v
    npm install
    ```
 
-2. **Configure environment variables:**
+2. **Configure environment:**
    ```bash
    cp .env.example .env
    ```
    
-   Edit `.env` and set:
-   - `GEMINI_API_KEY` - Your Google Gemini API key (get from [Google AI Studio](https://makersuite.google.com/app/apikey))
-   - `MOCK_MODE=1` - Set to 1 to bypass Gemini API and use mock data (useful for frontend integration)
+   Edit `.env`:
+   - Set `MOCK_MODE=1` for deterministic mock output (default)
+   - Set `MOCK_MODE=0` to attempt Gemini analysis (currently returns mock with error field)
 
-3. **Build the project:**
+3. **Build:**
    ```bash
    npm run build
    ```
 
 ## Running
 
-**Development mode (with auto-reload):**
+**Development:**
 ```bash
 npm run dev
 ```
 
-**Production mode:**
+**Production:**
 ```bash
 npm start
 ```
 
-The server will start on `http://localhost:3000` (or the port specified in `.env`).
+Server runs on `http://localhost:3000` (or port specified in `.env`).
 
-## API Endpoints
+## API
 
-### POST /api/annotate
+### POST /api/analyze
 
-Upload a video file for annotation.
+Analyzes a football video and returns annotations with temporally consistent player IDs, both offense and defense.
 
-**Request:**
-- Method: `POST`
-- Content-Type: `multipart/form-data`
-- Body:
-  - `video` (file): Video file to process
-  - Query params (optional):
-    - `intervalSec`: Frame extraction interval in seconds (default: 0.5)
-    - `promptContext`: Additional context string for Gemini analysis
+**Supports two input methods:**
+
+#### 1. File Upload (multipart/form-data)
+
+```bash
+curl -X POST http://localhost:3000/api/analyze \
+  -F "video=@path/to/video.mp4"
+```
+
+#### 2. Video URL (JSON body)
+
+```bash
+curl -X POST http://localhost:3000/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"video_url": "https://example.com/video.mp4"}'
+```
 
 **Response:**
 ```json
 {
-  "videoMeta": {
-    "durationSec": 45.5,
-    "fps": 30,
-    "width": 1920,
-    "height": 1080
-  },
+  "video_duration": 12.5,
+  "video_url": "http://localhost:3000/uploads/video_1234567890_abc123.mp4",
+  "play_summary": "The offense runs a play-action pass with the quarterback rolling right. The wide receiver runs a deep post route while the cornerback maintains tight coverage.",
   "frames": [
     {
-      "timestamp": 0.5,
+      "timestamp": 0,
       "players": [
         {
-          "id": "player_1",
-          "x": 150,
-          "y": 200,
+          "id": "qb1",
+          "x": 25.5,
+          "y": 35.2,
           "label": "QB",
-          "highlight": true
+          "highlight": true,
+          "color": "#FFD700"
+        },
+        {
+          "id": "wr1",
+          "x": 60.3,
+          "y": 50.1,
+          "label": "WR",
+          "highlight": true,
+          "color": "#FFD700"
+        },
+        {
+          "id": "cb1",
+          "x": 65.0,
+          "y": 48.0,
+          "label": "CB",
+          "highlight": false,
+          "color": "#FFFFFF"
         }
       ],
-      "annotations": [
+      "arrows": [
         {
-          "type": "arrow",
-          "from": [100, 150],
-          "to": [300, 200]
-        },
+          "from": [25.5, 35.2],
+          "to": [60.3, 50.1],
+          "color": "#FF0000",
+          "label": "Pass Route"
+        }
+      ],
+      "terminology": [
         {
-          "type": "textbox",
-          "x": 200,
-          "y": 100,
-          "term": "Route",
-          "definition": "Receiver running pattern"
-        },
-        {
-          "type": "circle",
-          "x": 400,
-          "y": 300,
-          "r": 50,
-          "label": "Zone"
+          "x": 50.0,
+          "y": 10.0,
+          "term": "Play-Action",
+          "definition": "A fake handoff followed by a pass"
         }
       ]
     }
-  ]
+  ],
+  "error": {
+    "message": "VisionAgents not implemented",
+    "details": { ... }
+  }
 }
 ```
 
-## Example Usage
+**Note:** The `error` field is optional and only present when Gemini fails and falls back to mock output.
 
-### Using curl:
+## Coordinate System
 
-```bash
-curl -X POST http://localhost:3000/api/annotate \
-  -F "video=@path/to/your/video.mp4" \
-  -F "intervalSec=0.5" \
-  -F "promptContext=Analyze this football play"
-```
+**All coordinates are percentage-based (0-100):**
+- `x`: Horizontal position (0 = left edge, 100 = right edge)
+- `y`: Vertical position (0 = top edge, 100 = bottom edge)
 
-### Using JavaScript (fetch):
+This ensures annotations work regardless of video resolution.
 
-```javascript
-const formData = new FormData();
-formData.append('video', videoFile);
-formData.append('intervalSec', '0.5');
+## Configuration
 
-const response = await fetch('http://localhost:3000/api/annotate', {
-  method: 'POST',
-  body: formData,
-});
+### Mock Mode
 
-const annotations = await response.json();
-console.log(annotations);
-```
+When `MOCK_MODE=1`:
+- Returns deterministic mock annotations
+- No API calls
+- Fast response for testing
 
-## Mock Mode
+### VisionAgents Integration
 
-Set `MOCK_MODE=1` in your `.env` file to bypass Gemini API calls. The service will return deterministic mock annotations, useful for:
-- Frontend development without API costs
-- Testing the API contract
-- Development when API keys aren't available
+When `VISIONAGENTS_ENABLED=1`:
+- Extracts frames from uploaded video using FFmpeg
+- Sends frames to VisionAgents API for analysis
+- Returns temporally consistent annotations with both offense and defense
+- Includes play summary (2-3 sentences)
+- Falls back to mock output with error field if analysis fails
+
+When `VISIONAGENTS_ENABLED=0`:
+- Returns mock output with "not implemented" warning
+- No API calls made
+
+### Environment Variables
+
+- `MOCK_MODE` - Set to `1` to use mock data (default: `1`)
+- `VISIONAGENTS_ENABLED` - Set to `1` to enable VisionAgents analysis (default: `0`)
+- `VISIONAGENTS_API_KEY` - Your VisionAgents API key
+- `VISIONAGENTS_API_URL` - VisionAgents API endpoint (default: `https://api.visionagents.ai/v1/analyze`)
+- `FRAME_INTERVAL_SEC` - Seconds between extracted frames (default: `0.5`)
+- `UPLOAD_DIR` - Directory for uploaded videos (default: `./uploads`)
 
 ## Project Structure
 
 ```
 src/
-  ├── server.ts          # Server entry point
-  ├── app.ts             # Express app setup
+  ├── server.ts              # Entry point
+  ├── app.ts                 # Express app setup
   ├── routes/
-  │   └── annotate.ts    # Annotation endpoint handler
-  ├── services/
-  │   ├── ffmpeg.ts      # Frame extraction service
-  │   ├── gemini.ts      # Gemini Vision API integration
-  │   └── format.ts      # Response formatting and validation
+  │   └── analyze.ts         # POST /api/analyze handler
   ├── schema/
-  │   └── annotation.ts  # Zod schemas and TypeScript types
+  │   └── contract.ts        # Zod schemas and TypeScript types
+  ├── services/
+  │   ├── mock.ts            # Mock annotation generator
+  │   ├── video.ts           # Video duration extraction (stub)
+  │   └── gemini.ts          # Gemini integration (stub)
   └── utils/
-      └── fs.ts          # File system utilities
+      ├── hex.ts             # Hex color utilities
+      ├── percent.ts         # Percentage coordinate utilities
+      └── fs.ts              # File system utilities
 ```
 
-## Configuration
+## Validation
 
-Environment variables (see `.env.example`):
-
-- `PORT` - Server port (default: 3000)
-- `GEMINI_API_KEY` - Google Gemini API key (required unless MOCK_MODE=1)
-- `GEMINI_MODEL` - Gemini model to use (default: gemini-1.5-pro-vision-latest)
-- `MOCK_MODE` - Set to 1 to use mock data (default: 0)
-- `FRAME_INTERVAL_SEC` - Seconds between extracted frames (default: 0.5)
-- `MAX_FILE_SIZE_MB` - Maximum upload size in MB (default: 500)
-- `UPLOAD_DIR` - Directory for uploaded videos (default: ./tmp/uploads)
-- `FRAME_OUTPUT_DIR` - Directory for extracted frames (default: ./tmp/frames)
-
-## Testing
-
-Run the smoke test:
-```bash
-npm test
-```
-
-This tests that the server is running and responds to basic requests.
+All responses are validated with Zod schemas before returning. If validation fails, the server returns a 500 error with a clear message.
 
 ## Error Handling
 
-The API returns structured error responses:
+- **400**: Missing video input (no file or video_url)
+- **500**: Validation failure or internal error
+- **Error field**: Included in response when Gemini fails (fallback to mock)
 
-```json
-{
-  "error": "Processing failed",
-  "message": "Detailed error message"
-}
-```
+## Development
 
-Common HTTP status codes:
-- `200` - Success
-- `400` - Bad request (missing file, invalid format)
-- `500` - Server error (processing failure)
-
-## Notes
-
-- Temporary files are automatically cleaned up after processing
-- Large video files may take time to process
-- Frame extraction uses high-quality JPEG encoding
-- The service processes frames sequentially to avoid rate limits
-- All responses are validated against Zod schemas before returning
+- Uses `ts-node-dev` for hot reload in development
+- TypeScript strict mode enabled
+- All coordinates validated to be 0-100 range
+- Hex colors validated with regex
 
 ## License
 
