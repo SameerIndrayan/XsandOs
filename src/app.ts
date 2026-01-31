@@ -1,4 +1,5 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import * as path from 'path';
 import analyzeRouter from './routes/analyze';
 import voiceRouter from './routes/voice';
@@ -10,6 +11,12 @@ import { ensureDir } from './utils/fs';
 
 export function createApp(): Express {
   const app = express();
+
+  // CORS - allow frontend to call API
+  app.use(cors({
+    origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'],
+    credentials: true,
+  }));
 
   // Middleware
   app.use(express.json());
