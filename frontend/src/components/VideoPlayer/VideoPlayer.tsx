@@ -4,8 +4,8 @@ import { TermsButton } from '../TermsButton';
 import { TermsDrawer } from '../TermsDrawer';
 import { useCanvasResize } from '../../hooks/useCanvasResize';
 import { useAnnotationFrames } from '../../hooks/useAnnotationFrames';
-import { AnnotationData, InterpolatedFrame, TerminologyAnnotation } from '../../types/annotations';
-import { TerminologyOverlayManager } from '../../utils/terminologyOverlayManager';
+import { AnnotationData, InterpolatedFrame, TerminologyAnnotation, PlayerAnnotation, ArrowAnnotation } from '../../types/annotations';
+import { BroadcastOverlayManager } from '../../utils/broadcastOverlayManager';
 import styles from './VideoPlayer.module.css';
 
 interface VideoPlayerProps {
@@ -40,6 +40,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [shortcutHint, setShortcutHint] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isTermsDrawerOpen, setIsTermsDrawerOpen] = useState(false);
+  const [learnMode, setLearnMode] = useState(false); // Learn mode toggle for terminology popups
 
   // Canvas dimensions for annotation positioning
   const dimensions = useCanvasResize(playerWrapperRef, videoRef, canvasRef);
@@ -47,40 +48,68 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // Get interpolated annotation frame for current time
   const rawFrame = useAnnotationFrames(annotations, currentTime);
 
-  // Initialize terminology manager (persist across renders)
-  const terminologyManager = useMemo(() => {
-    const manager = new TerminologyOverlayManager();
-    manager.reset(Date.now());
-    return manager;
+  // Initialize broadcast overlay manager (persist across renders)
+  const broadcastManager = useMemo(() => {
+    return new BroadcastOverlayManager();
   }, []);
 
-  // Filter terminology using the manager
+  // Filter frame using broadcast overlay manager (NFL-style minimal overlays)
   const frame = useMemo((): InterpolatedFrame | null => {
     if (!rawFrame || !annotations?.frames) return null;
 
-    // Find the closest frame to current time
-    const closestFrame = annotations.frames.reduce((closest, frame) => {
-      const closestDiff = Math.abs(closest.timestamp - currentTime);
-      const frameDiff = Math.abs(frame.timestamp - currentTime);
-      return frameDiff < closestDiff ? frame : closest;
-    }, annotations.frames[0]);
-
-    if (!closestFrame) return rawFrame;
-
-    // Select terms to display using the manager
-    // Use currentTime in seconds (manager expects milliseconds for timestamps)
-    const selectedTerms = terminologyManager.selectTermsToDisplay(
-      closestFrame.terminology,
-      rawFrame.players,
-      dimensions,
-      currentTime * 1000 // Convert to milliseconds for manager
+    // Apply broadcast overlay filtering to rawFrame data
+    // The manager will filter to only key actors, top arrows, and top callouts
+    const filtered = broadcastManager.filterFrame(
+      rawFrame.players as PlayerAnnotation[],
+      rawFrame.arrows as ArrowAnnotation[],
+      rawFrame.terminology as TerminologyAnnotation[],
+      learnMode
     );
 
+    // Convert filtered players back to InterpolatedPlayer format (preserve opacity)
+    const filteredPlayers = filtered.players.map(p => {
+      const originalPlayer = rawFrame.players.find(rp => rp.id === p.id);
+      return {
+        ...p,
+        opacity: originalPlayer?.opacity ?? 1,
+      };
+    });
+
+    // Convert filtered arrows back to InterpolatedArrow format (preserve opacity)
+    const filteredArrows = filtered.arrows.map(a => {
+      const originalArrow = rawFrame.arrows.find(ra => 
+        Math.abs(ra.from[0] - a.from[0]) < 0.1 &&
+        Math.abs(ra.from[1] - a.from[1]) < 0.1 &&
+        Math.abs(ra.to[0] - a.to[0]) < 0.1 &&
+        Math.abs(ra.to[1] - a.to[1]) < 0.1
+      );
+      return {
+        ...a,
+        opacity: originalArrow?.opacity ?? 1,
+        dashed: originalArrow?.dashed,
+      };
+    });
+
+    // Convert filtered terminology back to InterpolatedTerminology format
+    const filteredTerminology = filtered.terminology.map(t => {
+      const originalTerm = rawFrame.terminology.find(rt => 
+        rt.term === t.term &&
+        Math.abs(rt.x - t.x) < 0.1 &&
+        Math.abs(rt.y - t.y) < 0.1
+      );
+      return {
+        ...t,
+        opacity: originalTerm?.opacity ?? 1,
+        startTime: originalTerm?.startTime ?? currentTime,
+      };
+    });
+
     return {
-      ...rawFrame,
-      terminology: selectedTerms,
+      players: filteredPlayers,
+      arrows: filteredArrows,
+      terminology: filteredTerminology,
     };
-  }, [rawFrame, annotations, currentTime, dimensions, terminologyManager]);
+  }, [rawFrame, annotations, currentTime, broadcastManager, learnMode]);
 
   // Get all terms for current frame (for drawer)
   const allTermsForCurrentFrame = useMemo((): TerminologyAnnotation[] => {
@@ -237,8 +266,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           break;
         case 'arrowright':
         case 'l':
-          e.preventDefault();
-          skip(5);
+          // Skip forward, unless Shift+L (which is learn mode toggle)
+          if (e.shiftKey && e.key.toLowerCase() === 'l') {
+            e.preventDefault();
+            setLearnMode(prev => !prev);
+            showShortcutHint(learnMode ? 'Learn Mode Off' : 'Learn Mode On');
+          } else {
+            e.preventDefault();
+            skip(5);
+          }
           break;
         case 'arrowup':
           e.preventDefault();
@@ -279,7 +315,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [togglePlay, skip, toggleMute, toggleFullscreen, isPlaying, volume, isMuted, annotationsVisible, showShortcutHint]);
+  }, [togglePlay, skip, toggleMute, toggleFullscreen, isPlaying, volume, isMuted, annotationsVisible, learnMode, showShortcutHint]);
 
   // Update playback rate when it changes
   useEffect(() => {
@@ -298,12 +334,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Reset terminology manager when video restarts or annotations change
-  useEffect(() => {
-    if (annotations && currentTime < 0.5) {
-      terminologyManager.reset(Date.now());
-    }
-  }, [annotations, currentTime, terminologyManager]);
+  // Note: BroadcastOverlayManager is stateless, no reset needed
 
   const playbackRates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
 
@@ -335,32 +366,29 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           visible={annotationsVisible && isReady}
         />
 
-        {/* Terms Button */}
-        {annotationsVisible && allTermsForCurrentFrame.length > 0 && (
+        {/* Terms Button - only show in learn mode */}
+        {annotationsVisible && learnMode && allTermsForCurrentFrame.length > 0 && (
           <TermsButton
             termCount={allTermsForCurrentFrame.length}
             onClick={() => setIsTermsDrawerOpen(true)}
           />
         )}
 
-        {/* Terms Drawer */}
-        <TermsDrawer
-          terms={allTermsForCurrentFrame}
-          players={frame?.players || []}
-          isOpen={isTermsDrawerOpen}
-          onClose={() => setIsTermsDrawerOpen(false)}
-          onTermHover={() => {
-            // Future: highlight term area on hover
-          }}
-          onTermClick={(term) => {
-            // Toggle pin/unpin
-            if (terminologyManager.isPinned(term.term)) {
-              terminologyManager.unpinTerm(term.term);
-            } else {
-              terminologyManager.pinTerm(term.term);
-            }
-          }}
-        />
+        {/* Terms Drawer - only show in learn mode */}
+        {learnMode && (
+          <TermsDrawer
+            terms={allTermsForCurrentFrame}
+            players={frame?.players || []}
+            isOpen={isTermsDrawerOpen}
+            onClose={() => setIsTermsDrawerOpen(false)}
+            onTermHover={() => {
+              // Future: highlight term area on hover
+            }}
+            onTermClick={() => {
+              // No pin/unpin in broadcast mode
+            }}
+          />
+        )}
 
         {/* Shortcut hint overlay */}
         <div className={`${styles.shortcutHint} ${shortcutHint ? styles.visible : ''}`}>
@@ -495,6 +523,22 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                 ) : (
                   <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />
+                )}
+              </svg>
+            </button>
+
+            {/* Learn Mode Toggle */}
+            <button
+              className={`${styles.toggleButton} ${learnMode ? styles.active : ''}`}
+              onClick={() => setLearnMode(prev => !prev)}
+              aria-label={learnMode ? 'Disable learn mode' : 'Enable learn mode'}
+              title="Toggle learn mode - show terminology popups (Shift+L)"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                {learnMode ? (
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                ) : (
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.8 1.9 1.78h1.6c0-.93-.49-2.26-3.5-2.26-2.35 0-3.7 1.3-3.7 3.16 0 1.72 1.26 2.5 3.1 2.97 1.86.48 2.34 1.07 2.34 1.87 0 .77-.78 1.39-2.1 1.39-1.6 0-2.23-.72-2.23-1.64H6.04c0 1.7 1.16 2.93 3.57 2.93 2.4 0 3.79-1.4 3.79-3.47 0-1.76-1.35-2.48-3.28-2.91z" />
                 )}
               </svg>
             </button>
