@@ -1,12 +1,25 @@
-node_modules/
-dist/
-tmp/
-.env
+# Backend
+backend/node_modules/
+backend/dist/
+backend/tmp/
+backend/.env
+backend/*.log
+backend/latest-output.json
+backend/test-output*.json
+backend/test-parallel-output.json
+backend/test-visionagents-output.json
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Root
 *.log
 .DS_Store
 *.swp
 *.swo
 *~
+.env
 
 # Test videos (can be large files)
 videos/*.mp4
@@ -16,9 +29,3 @@ videos/*.mkv
 videos/*.webm
 videos/*.m4v
 !videos/README.md
-
-# Output files (test results)
-latest-output.json
-test-output*.json
-test-parallel-output.json
-test-visionagents-output.json
