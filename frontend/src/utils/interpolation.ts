@@ -149,6 +149,8 @@ const interpolateArrows = (
 
 /**
  * Select which terminology boxes to show based on duration
+ * NOTE: This is now handled by TerminologyOverlayManager in the VideoPlayer component
+ * This function is kept for backward compatibility but should not be used for terminology selection
  */
 const selectTerminology = (
   before: TerminologyAnnotation[],
@@ -157,16 +159,17 @@ const selectTerminology = (
   currentTime: number,
   beforeTimestamp: number
 ): InterpolatedTerminology[] => {
+  // Legacy implementation - now terminology is managed by TerminologyOverlayManager
+  // This is only used as a fallback
   const result: InterpolatedTerminology[] = [];
-  const fadeTime = 0.3; // Fade duration in seconds
+  const fadeTime = 0.3;
 
-  // Process terminology from 'before' frame
   for (const term of before) {
     const startTime = beforeTimestamp;
-    const endTime = startTime + term.duration;
+    const termDuration = term.duration ?? 4; // Default duration if not specified
+    const endTime = startTime + termDuration;
 
     if (currentTime <= endTime) {
-      // Calculate opacity based on fade in/out
       let opacity = 1;
       if (currentTime < startTime + fadeTime) {
         opacity = (currentTime - startTime) / fadeTime;
@@ -174,12 +177,10 @@ const selectTerminology = (
         opacity = (endTime - currentTime) / fadeTime;
       }
       opacity = Math.max(0, Math.min(1, opacity));
-
       result.push({ ...term, opacity, startTime });
     }
   }
 
-  // Add terminology from 'after' frame if different
   for (const term of after) {
     const exists = before.some((b) => b.term === term.term);
     if (!exists && t > 0.3) {

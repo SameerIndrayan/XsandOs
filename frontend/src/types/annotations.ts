@@ -22,7 +22,7 @@ export interface TerminologyAnnotation {
   y: number; // 0-100 percentage
   term: string;
   definition: string;
-  duration: number; // seconds to display
+  duration?: number; // seconds to display (optional, defaults to DISPLAY_SECONDS)
 }
 
 export interface AnnotationFrame {

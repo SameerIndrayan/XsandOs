@@ -1,8 +1,11 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { AnnotationCanvas } from '../AnnotationCanvas';
+import { TermsButton } from '../TermsButton';
+import { TermsDrawer } from '../TermsDrawer';
 import { useCanvasResize } from '../../hooks/useCanvasResize';
 import { useAnnotationFrames } from '../../hooks/useAnnotationFrames';
-import { AnnotationData } from '../../types/annotations';
+import { AnnotationData, InterpolatedFrame, TerminologyAnnotation } from '../../types/annotations';
+import { TerminologyOverlayManager } from '../../utils/terminologyOverlayManager';
 import styles from './VideoPlayer.module.css';
 
 interface VideoPlayerProps {
@@ -36,12 +39,57 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [isMuted, setIsMuted] = useState(false);
   const [shortcutHint, setShortcutHint] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isTermsDrawerOpen, setIsTermsDrawerOpen] = useState(false);
 
   // Canvas dimensions for annotation positioning
   const dimensions = useCanvasResize(playerWrapperRef, videoRef, canvasRef);
 
   // Get interpolated annotation frame for current time
-  const frame = useAnnotationFrames(annotations, currentTime);
+  const rawFrame = useAnnotationFrames(annotations, currentTime);
+
+  // Initialize terminology manager (persist across renders)
+  const terminologyManager = useMemo(() => {
+    const manager = new TerminologyOverlayManager();
+    manager.reset(Date.now());
+    return manager;
+  }, []);
+
+  // Filter terminology using the manager
+  const frame = useMemo((): InterpolatedFrame | null => {
+    if (!rawFrame || !annotations?.frames) return null;
+
+    // Find the closest frame to current time
+    const closestFrame = annotations.frames.reduce((closest, frame) => {
+      const closestDiff = Math.abs(closest.timestamp - currentTime);
+      const frameDiff = Math.abs(frame.timestamp - currentTime);
+      return frameDiff < closestDiff ? frame : closest;
+    }, annotations.frames[0]);
+
+    if (!closestFrame) return rawFrame;
+
+    // Select terms to display using the manager
+    // Use currentTime in seconds (manager expects milliseconds for timestamps)
+    const selectedTerms = terminologyManager.selectTermsToDisplay(
+      closestFrame.terminology,
+      rawFrame.players,
+      dimensions,
+      currentTime * 1000 // Convert to milliseconds for manager
+    );
+
+    return {
+      ...rawFrame,
+      terminology: selectedTerms,
+    };
+  }, [rawFrame, annotations, currentTime, dimensions, terminologyManager]);
+
+  // Get all terms for current frame (for drawer)
+  const allTermsForCurrentFrame = useMemo((): TerminologyAnnotation[] => {
+    if (!annotations?.frames) return [];
+    const currentFrame = annotations.frames.find(f => 
+      Math.abs(f.timestamp - currentTime) < 0.1
+    ) || annotations.frames[0];
+    return currentFrame?.terminology || [];
+  }, [annotations, currentTime]);
 
   // Sync current time during playback using requestAnimationFrame
   useEffect(() => {
@@ -250,6 +298,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
+  // Reset terminology manager when video restarts or annotations change
+  useEffect(() => {
+    if (annotations && currentTime < 0.5) {
+      terminologyManager.reset(Date.now());
+    }
+  }, [annotations, currentTime, terminologyManager]);
+
   const playbackRates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
 
   return (
@@ -278,6 +333,33 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           frame={frame}
           dimensions={dimensions}
           visible={annotationsVisible && isReady}
+        />
+
+        {/* Terms Button */}
+        {annotationsVisible && allTermsForCurrentFrame.length > 0 && (
+          <TermsButton
+            termCount={allTermsForCurrentFrame.length}
+            onClick={() => setIsTermsDrawerOpen(true)}
+          />
+        )}
+
+        {/* Terms Drawer */}
+        <TermsDrawer
+          terms={allTermsForCurrentFrame}
+          players={frame?.players || []}
+          isOpen={isTermsDrawerOpen}
+          onClose={() => setIsTermsDrawerOpen(false)}
+          onTermHover={() => {
+            // Future: highlight term area on hover
+          }}
+          onTermClick={(term) => {
+            // Toggle pin/unpin
+            if (terminologyManager.isPinned(term.term)) {
+              terminologyManager.unpinTerm(term.term);
+            } else {
+              terminologyManager.pinTerm(term.term);
+            }
+          }}
         />
 
         {/* Shortcut hint overlay */}
