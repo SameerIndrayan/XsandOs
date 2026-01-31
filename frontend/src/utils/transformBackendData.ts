@@ -2,6 +2,7 @@ import {
   BackendAnnotationResponse,
   AnnotationData,
   AnnotationFrame,
+  EditorialCallout,
 } from '../types/annotations';
 
 /**
@@ -40,6 +41,16 @@ export function transformBackendData(
         definition: term.definition,
         duration: 2.0, // Default duration for backend data
       })),
+    })),
+    callouts: (backendData.callouts || []).map((callout): EditorialCallout => ({
+      id: callout.id,
+      start_time: callout.start_time,
+      end_time: callout.end_time,
+      text: callout.text,
+      detail: callout.detail,
+      anchor: callout.anchor,
+      circle: callout.circle,
+      arrow: callout.arrow,
     })),
   };
 }

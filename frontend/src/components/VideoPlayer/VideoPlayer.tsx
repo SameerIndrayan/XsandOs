@@ -6,7 +6,7 @@ import { PlayTermsButton } from '../PlayTermsButton';
 import { PlayTermsModal } from '../PlayTermsModal';
 import { useCanvasResize } from '../../hooks/useCanvasResize';
 import { useAnnotationFrames } from '../../hooks/useAnnotationFrames';
-import { AnnotationData, InterpolatedFrame, TerminologyAnnotation, PlayerAnnotation, ArrowAnnotation } from '../../types/annotations';
+import { AnnotationData, InterpolatedFrame, TerminologyAnnotation, PlayerAnnotation, ArrowAnnotation, EditorialCallout } from '../../types/annotations';
 import { BroadcastOverlayManager } from '../../utils/broadcastOverlayManager';
 import { extractPlayTerms } from '../../utils/playTermsExtractor';
 import styles from './VideoPlayer.module.css';
@@ -57,12 +57,22 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     return new BroadcastOverlayManager();
   }, []);
 
+  // Get active editorial callouts (if any) - but we're primarily using frame-based terminology now
+  const activeCallouts = useMemo((): EditorialCallout[] => {
+    if (!annotations?.callouts) return [];
+    return annotations.callouts.filter(callout => 
+      currentTime >= callout.start_time && currentTime <= callout.end_time
+    );
+  }, [annotations, currentTime]);
+
   // Filter frame using broadcast overlay manager (NFL-style minimal overlays)
+  // NOTE: No longer using terminology from frames - only editorial callouts
   const frame = useMemo((): InterpolatedFrame | null => {
     if (!rawFrame || !annotations?.frames) return null;
 
     // Apply broadcast overlay filtering to rawFrame data
-    // The manager will filter to only key actors, top arrows, and top callouts
+    // The manager will filter to only key actors and top arrows
+    // Include terminology from frames (play terms)
     const filtered = broadcastManager.filterFrame(
       rawFrame.players as PlayerAnnotation[],
       rawFrame.arrows as ArrowAnnotation[],
@@ -94,24 +104,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       };
     });
 
-    // Convert filtered terminology back to InterpolatedTerminology format
-    const filteredTerminology = filtered.terminology.map(t => {
-      const originalTerm = rawFrame.terminology.find(rt => 
-        rt.term === t.term &&
-        Math.abs(rt.x - t.x) < 0.1 &&
-        Math.abs(rt.y - t.y) < 0.1
-      );
-      return {
-        ...t,
-        opacity: originalTerm?.opacity ?? 1,
-        startTime: originalTerm?.startTime ?? currentTime,
-      };
-    });
-
+    // Include terminology from frames (play terms like "Shotgun", "Nickel Defense")
     return {
       players: filteredPlayers,
       arrows: filteredArrows,
-      terminology: filteredTerminology,
+      terminology: filtered.terminology.map(t => ({
+        ...t,
+        opacity: 1,
+        startTime: currentTime,
+      })),
     };
   }, [rawFrame, annotations, currentTime, broadcastManager, learnMode]);
 
@@ -373,6 +374,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           frame={frame}
           dimensions={dimensions}
           visible={annotationsVisible && isReady}
+          callouts={activeCallouts}
         />
 
         {/* Play Terms Button - always visible when annotations are visible */}

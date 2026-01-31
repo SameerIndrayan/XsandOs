@@ -77,30 +77,41 @@ function generateMockFrame(timestamp: number): AnnotationFrame {
 }
 
 /**
- * Generates mock editorial callouts (broadcast-style: action/outcome concepts)
+ * Generates mock editorial callouts (formations pre-play + action during play)
  */
 function generateMockCallouts(): EditorialCallout[] {
   return [
     {
-      id: 'callout_1',
-      start_time: 1.0,
-      end_time: 4.5, // >= 3.0s duration
+      id: 'offensive_formation',
+      start_time: 0,
+      end_time: 2.0, // Pre-play only
+      text: 'Shotgun',
+      detail: 'Quarterback lines up several yards behind center',
+      anchor: {
+        x: 50,
+        y: 60,
+      },
+    },
+    {
+      id: 'defensive_formation',
+      start_time: 0,
+      end_time: 2.0, // Pre-play only
+      text: 'Nickel Defense',
+      detail: 'Defense with 5 defensive backs',
+      anchor: {
+        x: 50,
+        y: 40,
+      },
+    },
+    {
+      id: 'action_callout',
+      start_time: 3.0,
+      end_time: 6.0, // During play, 3s duration
       text: 'Pursuit',
       detail: 'Defensive pursuit angle cuts off the running lane, forcing the ball carrier inside.',
       anchor: {
         x: 65,
         y: 55,
-      },
-    },
-    {
-      id: 'callout_2',
-      start_time: 5.0,
-      end_time: 8.5, // >= 3.0s duration, staggered
-      text: 'Downfield Blocking',
-      detail: 'Wide receiver seals the edge, creating space for the ball carrier.',
-      anchor: {
-        x: 70,
-        y: 45,
       },
     },
   ];
