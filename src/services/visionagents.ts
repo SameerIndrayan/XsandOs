@@ -158,13 +158,33 @@ Return ONLY valid JSON, no markdown, no code blocks, no explanations.`;
   processedFrames.sort((a, b) => a.timestamp - b.timestamp);
   allFrames.push(...processedFrames);
 
-  // Generate play summary
+  // Generate play summary using key frames (first, middle, last)
   try {
-    console.log('Generating play summary...');
-    const summaryPrompt = `Based on the football play frames analyzed, provide a 2-3 sentence summary of the play. What happened?`;
-    const summaryResult = await model.generateContent(summaryPrompt);
-    playSummary = summaryResult.response.text();
-    console.log(`[DEBUG] Play summary generated: ${playSummary.substring(0, 100)}...`);
+    console.log('Generating play summary from key frames...');
+    
+    // Select key frames: first, middle, and last
+    const keyFrameIndices = [
+      0, // First frame
+      Math.floor(frames.length / 2), // Middle frame
+      frames.length - 1, // Last frame
+    ].filter(idx => idx < frames.length && idx >= 0);
+    
+    // Build summary prompt with key frames
+    const summaryPrompt = `Analyze these key frames from a football play and provide a 2-3 sentence summary describing what happened in the play. Describe the formation, key movements, and outcome.`;
+    
+    // Prepare key frame images
+    const summaryParts: any[] = [{ text: summaryPrompt }];
+    for (const idx of keyFrameIndices) {
+      summaryParts.push(imageParts[idx]);
+    }
+    
+    const summaryResult = await model.generateContent(summaryParts);
+    playSummary = summaryResult.response.text().trim();
+    
+    // Clean up any markdown formatting
+    playSummary = playSummary.replace(/^\*\*/, '').replace(/\*\*$/, '').trim();
+    
+    console.log(`[DEBUG] Play summary generated (${playSummary.length} chars): ${playSummary.substring(0, 150)}...`);
   } catch (error) {
     console.error('Error generating play summary:', error);
     playSummary = 'Football play analyzed with player positions and movement patterns identified.';

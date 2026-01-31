@@ -16,3 +16,9 @@ videos/*.mkv
 videos/*.webm
 videos/*.m4v
 !videos/README.md
+
+# Output files (test results)
+latest-output.json
+test-output*.json
+test-parallel-output.json
+test-visionagents-output.json

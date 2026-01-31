@@ -57,17 +57,27 @@ router.get('/analyze', async (req: Request, res: Response) => {
   try {
     const fs = await import('fs/promises');
     const path = await import('path');
+    // Try latest-output.json first, then test-output.json as fallback
+    const latestOutputPath = path.join(process.cwd(), 'latest-output.json');
     const testOutputPath = path.join(process.cwd(), 'test-output.json');
     
     try {
-      const data = await fs.readFile(testOutputPath, 'utf-8');
+      // Try latest-output.json first (most recent)
+      const data = await fs.readFile(latestOutputPath, 'utf-8');
       const jsonData = JSON.parse(data);
       return res.json(jsonData);
     } catch (error) {
-      return res.status(404).json({
-        error: 'No test output found',
-        message: 'test-output.json not found. Make a POST request to /api/analyze with a video file first.',
-      });
+      // Fallback to test-output.json if latest doesn't exist
+      try {
+        const data = await fs.readFile(testOutputPath, 'utf-8');
+        const jsonData = JSON.parse(data);
+        return res.json(jsonData);
+      } catch (fallbackError) {
+        return res.status(404).json({
+          error: 'No analysis output found',
+          message: 'No analysis results available. Make a POST request to /api/analyze with a video file first.',
+        });
+      }
     }
   } catch (error) {
     return res.status(500).json({
@@ -194,6 +204,19 @@ router.post('/analyze', upload.single('video'), async (req: Request, res: Respon
     // Validate response with Zod before returning
     try {
       const validatedResponse = AnalyzeResponseSchema.parse(response);
+      
+      // Save response to files for GET endpoint
+      try {
+        const fs = await import('fs/promises');
+        const path = await import('path');
+        const outputPath = path.join(process.cwd(), 'latest-output.json');
+        await fs.writeFile(outputPath, JSON.stringify(validatedResponse, null, 2));
+        console.log(`[Analyze] Saved response to ${outputPath}`);
+      } catch (saveError) {
+        console.error('[Analyze] Failed to save response:', saveError);
+        // Continue even if save fails
+      }
+      
       return res.status(200).json(validatedResponse);
     } catch (validationError) {
       console.error('Response validation failed:', validationError);
