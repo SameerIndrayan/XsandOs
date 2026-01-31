@@ -1,0 +1,1 @@
+export { VoiceQA } from './VoiceQA';

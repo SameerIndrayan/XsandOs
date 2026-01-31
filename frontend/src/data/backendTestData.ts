@@ -1,0 +1,3110 @@
+import { BackendAnnotationResponse } from '../types/annotations';
+
+export const backendTestData: BackendAnnotationResponse = {
+  "video_duration": 21.548118,
+  "video_url": "http://localhost:3000/uploads/video_1769897471881_fzqr8ry.mp4",
+  "play_summary": "Based on the provided key frames, here is a summary of the play:\n\nFacing a crucial 3rd and 6, the Eagles offense lines up in a shotgun formation with a trips receiver set to the left side of the field. The play results in an incompletion as the Ravens' defense successfully covers the route, preventing a conversion. The sequence concludes with Ravens defensive back #2 celebrating the stop, which forces the offense into a 4th down situation.",
+  "frames": [
+    {
+      "timestamp": 0,
+      "players": [
+        {
+          "id": "off_qb",
+          "x": 57,
+          "y": 60,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_rb",
+          "x": 58,
+          "y": 54,
+          "label": "RB",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_c",
+          "x": 52,
+          "y": 53,
+          "label": "C",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_lg",
+          "x": 53,
+          "y": 50,
+          "label": "LG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_lt",
+          "x": 54,
+          "y": 47,
+          "label": "LT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_rg",
+          "x": 53,
+          "y": 56,
+          "label": "RG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_rt",
+          "x": 54,
+          "y": 59,
+          "label": "RT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_wr_top",
+          "x": 61,
+          "y": 37,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_slot_top",
+          "x": 55,
+          "y": 44,
+          "label": "WR/TE",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_wr_bot",
+          "x": 65,
+          "y": 68,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_dl_1",
+          "x": 46,
+          "y": 48,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_2",
+          "x": 47,
+          "y": 53,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_3",
+          "x": 48,
+          "y": 58,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb_1",
+          "x": 42,
+          "y": 46,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb_2",
+          "x": 40,
+          "y": 62,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb_top",
+          "x": 32,
+          "y": 27,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s_top",
+          "x": 26,
+          "y": 37,
+          "label": "S",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s_bot",
+          "x": 27,
+          "y": 57,
+          "label": "S/LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb_bot",
+          "x": 14,
+          "y": 65,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_fs",
+          "x": 7,
+          "y": 32,
+          "label": "FS",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [52, 53],
+          "to": [57, 60],
+          "color": "#FFFF00",
+          "label": "Snap"
+        },
+        {
+          "from": [57, 60],
+          "to": [40, 60],
+          "color": "#FFFFFF",
+          "label": "Drive Direction"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 57,
+          "y": 65,
+          "term": "Shotgun",
+          "definition": "Formation where the QB stands back from the center to receive the snap, allowing better visibility of the defense."
+        },
+        {
+          "x": 50,
+          "y": 25,
+          "term": "Line of Scrimmage",
+          "definition": "The imaginary line separating the offense and defense at the start of the play."
+        },
+        {
+          "x": 26,
+          "y": 30,
+          "term": "Nickel Defense",
+          "definition": "Defensive formation with 5 defensive backs (DBs) to counter pass plays."
+        }
+      ]
+    },
+    {
+      "timestamp": 0.72,
+      "players": [],
+      "arrows": [],
+      "terminology": []
+    },
+    {
+      "timestamp": 1.44,
+      "players": [
+        {
+          "id": "off_qb",
+          "x": 58,
+          "y": 52,
+          "label": "QB",
+          "highlight": true,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_rb",
+          "x": 58,
+          "y": 48,
+          "label": "RB",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_lt",
+          "x": 52,
+          "y": 43,
+          "label": "LT",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_lg",
+          "x": 52,
+          "y": 46,
+          "label": "LG",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_c",
+          "x": 52,
+          "y": 50,
+          "label": "C",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_rg",
+          "x": 52,
+          "y": 54,
+          "label": "RG",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_rt",
+          "x": 52,
+          "y": 57,
+          "label": "RT",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_te",
+          "x": 52,
+          "y": 38,
+          "label": "TE",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_wr1",
+          "x": 50,
+          "y": 26,
+          "label": "WR",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_slot",
+          "x": 55,
+          "y": 62,
+          "label": "WR",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "off_wr2",
+          "x": 55,
+          "y": 72,
+          "label": "WR",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "def_de1",
+          "x": 49,
+          "y": 42,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dt1",
+          "x": 49,
+          "y": 46,
+          "label": "DT",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dt2",
+          "x": 49,
+          "y": 51,
+          "label": "DT",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_de2",
+          "x": 49,
+          "y": 57,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb1",
+          "x": 44,
+          "y": 46,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb2",
+          "x": 44,
+          "y": 54,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb1",
+          "x": 35,
+          "y": 26,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_ni",
+          "x": 43,
+          "y": 62,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb2",
+          "x": 40,
+          "y": 72,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s1",
+          "x": 12,
+          "y": 65,
+          "label": "S",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s2",
+          "x": 22,
+          "y": 30,
+          "label": "S",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [58, 52],
+          "to": [40, 52],
+          "color": "#FFFFFF",
+          "label": "Vision"
+        },
+        {
+          "from": [58, 48],
+          "to": [52, 45],
+          "color": "#FFFF00",
+          "label": "Block/Release"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 65,
+          "y": 52,
+          "term": "Shotgun Formation",
+          "definition": "The Quarterback (QB) lines up several yards behind the center to receive the snap, allowing better vision of the field."
+        },
+        {
+          "x": 43,
+          "y": 62,
+          "term": "Nickel Defense",
+          "definition": "The defense has substituted a linebacker for an extra defensive back (Nickelback) to cover the slot receiver."
+        },
+        {
+          "x": 50,
+          "y": 80,
+          "term": "Line of Scrimmage",
+          "definition": "The imaginary line separating the offense and defense at the start of the play."
+        }
+      ]
+    },
+    {
+      "timestamp": 2.15,
+      "players": [
+        {
+          "id": "off_qb",
+          "x": 38,
+          "y": 62,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_rb",
+          "x": 38,
+          "y": 68,
+          "label": "RB",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_lt",
+          "x": 45,
+          "y": 53,
+          "label": "LT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_lg",
+          "x": 45,
+          "y": 57,
+          "label": "LG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_c",
+          "x": 45,
+          "y": 61,
+          "label": "C",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_rg",
+          "x": 45,
+          "y": 65,
+          "label": "RG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_rt",
+          "x": 45,
+          "y": 69,
+          "label": "RT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_wr_top",
+          "x": 42,
+          "y": 25,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_wr_slot",
+          "x": 44,
+          "y": 42,
+          "label": "WR/TE",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_wr_bot",
+          "x": 42,
+          "y": 88,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_dl_1",
+          "x": 50,
+          "y": 53,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_2",
+          "x": 50,
+          "y": 57,
+          "label": "DT",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_3",
+          "x": 50,
+          "y": 61,
+          "label": "DT",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_4",
+          "x": 50,
+          "y": 66,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb_1",
+          "x": 55,
+          "y": 58,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb_2",
+          "x": 55,
+          "y": 64,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb_top",
+          "x": 55,
+          "y": 25,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb_slot",
+          "x": 53,
+          "y": 42,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb_bot",
+          "x": 55,
+          "y": 88,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s_top",
+          "x": 70,
+          "y": 38,
+          "label": "S",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s_bot",
+          "x": 70,
+          "y": 70,
+          "label": "S",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [],
+      "terminology": [
+        {
+          "x": 38,
+          "y": 62,
+          "term": "Shotgun Formation",
+          "definition": "The quarterback stands about 5-7 yards behind the center to receive the snap, allowing better vision of the defense."
+        },
+        {
+          "x": 70,
+          "y": 55,
+          "term": "Cover 2 / Two High",
+          "definition": "Defense showing two deep safeties, likely splitting the deep field into halves."
+        },
+        {
+          "x": 48,
+          "y": 80,
+          "term": "Line of Scrimmage",
+          "definition": "The imaginary line separating the offense and defense at the start of the play, positioned at the ball."
+        },
+        {
+          "x": 90,
+          "y": 50,
+          "term": "Line to Gain",
+          "definition": "The 40-yard line (Right side), which the offense must reach for a first down."
+        }
+      ]
+    },
+    {
+      "timestamp": 2.87,
+      "players": [
+        {
+          "id": "qb1",
+          "x": 57,
+          "y": 48,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "rb1",
+          "x": 53,
+          "y": 55,
+          "label": "RB",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_lt",
+          "x": 48,
+          "y": 42,
+          "label": "LT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_lg",
+          "x": 48,
+          "y": 45,
+          "label": "LG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_c",
+          "x": 48,
+          "y": 48,
+          "label": "C",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_rg",
+          "x": 48,
+          "y": 51,
+          "label": "RG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_rt",
+          "x": 48,
+          "y": 54,
+          "label": "RT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr_bot",
+          "x": 7,
+          "y": 73,
+          "label": "WR",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr_top_1",
+          "x": 28,
+          "y": 27,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr_top_2",
+          "x": 44,
+          "y": 30,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "cb_bot",
+          "x": 19,
+          "y": 66,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "lb_mid",
+          "x": 24,
+          "y": 54,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "lb_top",
+          "x": 25,
+          "y": 42,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "db_top_1",
+          "x": 38,
+          "y": 25,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "db_top_2",
+          "x": 36,
+          "y": 30,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "dl_top",
+          "x": 45,
+          "y": 42,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "dl_mid",
+          "x": 45,
+          "y": 48,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "dl_bot",
+          "x": 45,
+          "y": 54,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [57, 48],
+          "to": [54, 48],
+          "color": "#FFFFFF",
+          "label": "Drop Back"
+        },
+        {
+          "from": [7, 73],
+          "to": [2, 73],
+          "color": "#00FF00",
+          "label": "Route"
+        },
+        {
+          "from": [28, 27],
+          "to": [20, 25],
+          "color": "#00FF00",
+          "label": "Route"
+        },
+        {
+          "from": [53, 55],
+          "to": [50, 57],
+          "color": "#FFFF00",
+          "label": "Block"
+        },
+        {
+          "from": [24, 54],
+          "to": [20, 54],
+          "color": "#241773",
+          "label": "Cov Drop"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 55,
+          "y": 48,
+          "term": "Pocket",
+          "definition": "Protected area formed by the offensive line for the QB."
+        },
+        {
+          "x": 47,
+          "y": 60,
+          "term": "Line of Scrimmage",
+          "definition": "Blue line indicating where the play started."
+        },
+        {
+          "x": 35,
+          "y": 60,
+          "term": "Line to Gain",
+          "definition": "Yellow line indicating the distance needed for a first down."
+        },
+        {
+          "x": 57,
+          "y": 48,
+          "term": "Shotgun",
+          "definition": "Formation where the QB receives the snap several yards behind the center."
+        }
+      ]
+    },
+    {
+      "timestamp": 3.59,
+      "players": [
+        {
+          "id": "qb1",
+          "x": 78,
+          "y": 42,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "rb1",
+          "x": 63,
+          "y": 49,
+          "label": "RB",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_center",
+          "x": 56,
+          "y": 48,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr_slot",
+          "x": 38,
+          "y": 68,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr_wide",
+          "x": 28,
+          "y": 57,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr_deep",
+          "x": 18,
+          "y": 24,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_rush1",
+          "x": 53,
+          "y": 54,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb1",
+          "x": 48,
+          "y": 45,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s1",
+          "x": 66,
+          "y": 36,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb_deep",
+          "x": 8,
+          "y": 20,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [38, 68],
+          "to": [30, 65],
+          "color": "#FFFFFF",
+          "label": "Out Route"
+        },
+        {
+          "from": [28, 57],
+          "to": [22, 53],
+          "color": "#FFFFFF",
+          "label": "Crossing Route"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 78,
+          "y": 42,
+          "term": "Pocket",
+          "definition": "The protected area formed by blockers where the QB stands to pass."
+        },
+        {
+          "x": 53,
+          "y": 50,
+          "term": "Pass Rush",
+          "definition": "Defensive linemen and linebackers attempting to sack the quarterback."
+        },
+        {
+          "x": 50,
+          "y": 90,
+          "term": "3rd & 6",
+          "definition": "The down and distance; the offense must gain 6 yards to reset the downs."
+        }
+      ]
+    },
+    {
+      "timestamp": 4.31,
+      "players": [
+        {
+          "id": "qb1",
+          "x": 81,
+          "y": 40,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol1",
+          "x": 48,
+          "y": 49,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol2",
+          "x": 66,
+          "y": 55,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "rb1",
+          "x": 73,
+          "y": 52,
+          "label": "RB/TE",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr1",
+          "x": 9,
+          "y": 48,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr2",
+          "x": 7,
+          "y": 73,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "dl1",
+          "x": 41,
+          "y": 40,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "dl2",
+          "x": 62,
+          "y": 44,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "dl3",
+          "x": 65,
+          "y": 55,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "lb1",
+          "x": 58,
+          "y": 28,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [81, 40],
+          "to": [75, 40],
+          "color": "#FFFF00",
+          "label": "Dropback"
+        },
+        {
+          "from": [41, 40],
+          "to": [48, 42],
+          "color": "#FF0000",
+          "label": "Pass Rush"
+        },
+        {
+          "from": [62, 44],
+          "to": [70, 44],
+          "color": "#FF0000",
+          "label": "Pass Rush"
+        },
+        {
+          "from": [9, 48],
+          "to": [0, 48],
+          "color": "#00FF00",
+          "label": "Route"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 50,
+          "y": 45,
+          "term": "Pass Protection",
+          "definition": "Offensive line engaging defenders to prevent them from sacking the quarterback."
+        },
+        {
+          "x": 80,
+          "y": 40,
+          "term": "Pocket",
+          "definition": "The protected area behind the offensive line where the QB operates."
+        }
+      ]
+    },
+    {
+      "timestamp": 5.03,
+      "players": [
+        {
+          "id": "qb",
+          "x": 82,
+          "y": 39,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr_left",
+          "x": 3,
+          "y": 41,
+          "label": "WR",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "fs",
+          "x": 53,
+          "y": 27,
+          "label": "FS",
+          "highlight": false,
+          "color": "#38006b"
+        },
+        {
+          "id": "lb_mid",
+          "x": 46,
+          "y": 43,
+          "label": "LB",
+          "highlight": false,
+          "color": "#38006b"
+        },
+        {
+          "id": "db_nickel",
+          "x": 73,
+          "y": 49,
+          "label": "DB",
+          "highlight": false,
+          "color": "#38006b"
+        },
+        {
+          "id": "ol_lt",
+          "x": 42,
+          "y": 43,
+          "label": "LT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_lg",
+          "x": 44,
+          "y": 44,
+          "label": "LG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_c",
+          "x": 46,
+          "y": 46,
+          "label": "C",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_rg",
+          "x": 48,
+          "y": 47,
+          "label": "RG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_rt",
+          "x": 50,
+          "y": 49,
+          "label": "RT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "dl_edge",
+          "x": 40,
+          "y": 42,
+          "label": "DE",
+          "highlight": false,
+          "color": "#38006b"
+        },
+        {
+          "id": "rb_block",
+          "x": 78,
+          "y": 55,
+          "label": "RB",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "db_right",
+          "x": 87,
+          "y": 60,
+          "label": "DB",
+          "highlight": false,
+          "color": "#38006b"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [82, 39],
+          "to": [90, 39],
+          "color": "#FFFFFF",
+          "label": "Drop Back"
+        },
+        {
+          "from": [3, 41],
+          "to": [3, 20],
+          "color": "#FFFF00",
+          "label": "Go Route"
+        },
+        {
+          "from": [46, 43],
+          "to": [55, 41],
+          "color": "#38006b",
+          "label": "Blitz/Rush"
+        },
+        {
+          "from": [53, 27],
+          "to": [45, 25],
+          "color": "#38006b",
+          "label": "Coverage"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 45,
+          "y": 45,
+          "term": "Pocket",
+          "definition": "Protective area formed by the offensive line for the QB."
+        },
+        {
+          "x": 53,
+          "y": 27,
+          "term": "Deep Safety",
+          "definition": "Last line of defense, responsible for deep passing zones."
+        },
+        {
+          "x": 82,
+          "y": 39,
+          "term": "Clean Pocket",
+          "definition": "The QB has time and space to throw without immediate pressure."
+        }
+      ]
+    },
+    {
+      "timestamp": 5.75,
+      "players": [
+        {
+          "id": "off_wr_deep",
+          "x": 12,
+          "y": 42,
+          "label": "WR",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_cb_deep",
+          "x": 15,
+          "y": 38,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "off_wr_slot",
+          "x": 64,
+          "y": 44,
+          "label": "WR",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_lb_rush",
+          "x": 54,
+          "y": 62,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "off_ol_56",
+          "x": 59,
+          "y": 63,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_lb_spy",
+          "x": 69,
+          "y": 63,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "off_ol_guard",
+          "x": 78,
+          "y": 65,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_de_rush",
+          "x": 94,
+          "y": 66,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "off_ot_right",
+          "x": 96,
+          "y": 70,
+          "label": "OT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_wr_screen",
+          "x": 3,
+          "y": 58,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [12, 42],
+          "to": [5, 42],
+          "color": "#FFFFFF",
+          "label": "Deep Route"
+        },
+        {
+          "from": [64, 44],
+          "to": [50, 40],
+          "color": "#FFFFFF",
+          "label": "Crossing Route"
+        },
+        {
+          "from": [15, 38],
+          "to": [8, 38],
+          "color": "#241773",
+          "label": "Pursuit"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 59,
+          "y": 63,
+          "term": "Pass Protection",
+          "definition": "Offensive line blocking to create time for the quarterback."
+        },
+        {
+          "x": 15,
+          "y": 38,
+          "term": "Man Coverage",
+          "definition": "Defender responsible for covering a specific receiver man-to-man."
+        },
+        {
+          "x": 64,
+          "y": 44,
+          "term": "Crossing Route",
+          "definition": "Receiver running across the field to find open space in the defense."
+        }
+      ]
+    },
+    {
+      "timestamp": 6.46,
+      "players": [
+        {
+          "id": "ravens_13",
+          "x": 4,
+          "y": 42,
+          "label": "Ravens #13 (WR)",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "eagles_ball_carrier",
+          "x": 56,
+          "y": 50,
+          "label": "Ball Carrier (Eagles)",
+          "highlight": true,
+          "color": "#004C54"
+        },
+        {
+          "id": "ravens_tackler",
+          "x": 54,
+          "y": 54,
+          "label": "Ravens Tackler",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "ravens_69",
+          "x": 61,
+          "y": 60,
+          "label": "Ravens #69",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "eagles_56",
+          "x": 76,
+          "y": 65,
+          "label": "Eagles #56 (OL)",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "ravens_defender_right",
+          "x": 97,
+          "y": 58,
+          "label": "Ravens Defender",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [15, 42],
+          "to": [45, 48],
+          "color": "#241773",
+          "label": "Pursuit"
+        },
+        {
+          "from": [85, 65],
+          "to": [65, 55],
+          "color": "#004C54",
+          "label": "Downfield Blocking"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 56,
+          "y": 50,
+          "term": "Tackle",
+          "definition": "A defensive player physically brings the ball carrier to the ground to end the play."
+        },
+        {
+          "x": 76,
+          "y": 65,
+          "term": "Pursuit",
+          "definition": "Players running towards the ball carrier to assist in the tackle or play."
+        }
+      ]
+    },
+    {
+      "timestamp": 7.18,
+      "players": [
+        {
+          "id": "ravens_ol_69",
+          "x": 32,
+          "y": 45,
+          "label": "OL 69",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "ravens_back_left",
+          "x": 23,
+          "y": 40,
+          "label": "RB/QB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "eagles_lb_56",
+          "x": 64,
+          "y": 52,
+          "label": "LB 56",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ravens_fb_42",
+          "x": 72,
+          "y": 40,
+          "label": "FB 42",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "ravens_ol_68",
+          "x": 72,
+          "y": 68,
+          "label": "OL 68",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "eagles_def_ground",
+          "x": 79,
+          "y": 55,
+          "label": "DEF",
+          "highlight": false,
+          "color": "#FFFFFF"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [72, 68],
+          "to": [90, 75],
+          "color": "#241773",
+          "label": "Lead Block"
+        },
+        {
+          "from": [72, 40],
+          "to": [90, 40],
+          "color": "#241773",
+          "label": "Lead Block"
+        },
+        {
+          "from": [64, 52],
+          "to": [85, 55],
+          "color": "#FFFFFF",
+          "label": "Pursuit"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 72,
+          "y": 68,
+          "term": "Pulling Lineman",
+          "definition": "An offensive lineman who leaves his initial position to lead block for a ball carrier on the edge."
+        },
+        {
+          "x": 64,
+          "y": 52,
+          "term": "Pursuit",
+          "definition": "Defenders chasing the ball carrier across the field to make a tackle."
+        },
+        {
+          "x": 32,
+          "y": 45,
+          "term": "Backside Block",
+          "definition": "An offensive player blocking a defender away from the play's direction to prevent pursuit."
+        }
+      ]
+    },
+    {
+      "timestamp": 7.9,
+      "players": [
+        {
+          "id": "rav_68",
+          "x": 24,
+          "y": 55,
+          "label": "Ravens #68",
+          "highlight": true,
+          "color": "#241773"
+        },
+        {
+          "id": "rav_42",
+          "x": 42,
+          "y": 32,
+          "label": "Ravens #42",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "eag_56",
+          "x": 46,
+          "y": 48,
+          "label": "Eagles #56",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "rav_kneel",
+          "x": 65,
+          "y": 48,
+          "label": "Raven (Kneeling)",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "eag_72",
+          "x": 87,
+          "y": 42,
+          "label": "Eagles #72",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "eag_64",
+          "x": 86,
+          "y": 75,
+          "label": "Eagles #64",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "eag_ground_left",
+          "x": 9,
+          "y": 55,
+          "label": "Eagle (Down)",
+          "highlight": true,
+          "color": "#004C54"
+        },
+        {
+          "id": "rav_ground_left",
+          "x": 18,
+          "y": 30,
+          "label": "Raven (Tackling)",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [35, 60],
+          "to": [25, 58],
+          "color": "#241773",
+          "label": "Movement to play"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 50,
+          "y": 90,
+          "term": "Score Bug",
+          "definition": "Graphic displaying game status: 3rd Quarter, 12:06 remaining, 3rd Down and 6."
+        },
+        {
+          "x": 9,
+          "y": 55,
+          "term": "Downed Player",
+          "definition": "Ball carrier or receiver tackled to the ground, ending the play."
+        }
+      ]
+    },
+    {
+      "timestamp": 8.62,
+      "players": [],
+      "arrows": [],
+      "terminology": []
+    },
+    {
+      "timestamp": 9.34,
+      "players": [
+        {
+          "id": "bal_1",
+          "x": 51,
+          "y": 42,
+          "label": "BAL Player",
+          "highlight": true,
+          "color": "#241773"
+        },
+        {
+          "id": "phi_7",
+          "x": 65,
+          "y": 55,
+          "label": "PHI #7",
+          "highlight": true,
+          "color": "#004C54"
+        },
+        {
+          "id": "phi_64",
+          "x": 6,
+          "y": 78,
+          "label": "PHI #64",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "phi_49",
+          "x": 4,
+          "y": 15,
+          "label": "PHI #49",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "phi_82",
+          "x": 90,
+          "y": 10,
+          "label": "PHI #82",
+          "highlight": false,
+          "color": "#004C54"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [51, 42],
+          "to": [55, 42],
+          "color": "#241773",
+          "label": "walking"
+        },
+        {
+          "from": [65, 55],
+          "to": [72, 55],
+          "color": "#004C54",
+          "label": "walking"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 50,
+          "y": 5,
+          "term": "Sideline",
+          "definition": "The area along the long edges of the field reserved for team personnel, coaches, and substitute players."
+        },
+        {
+          "x": 50,
+          "y": 90,
+          "term": "Dead Ball",
+          "definition": "The period between plays when the ball is not in play, often used for substitutions or regrouping."
+        }
+      ]
+    },
+    {
+      "timestamp": 10.06,
+      "players": [],
+      "arrows": [],
+      "terminology": []
+    },
+    {
+      "timestamp": 10.77,
+      "players": [
+        {
+          "id": "phi_7",
+          "x": 8,
+          "y": 40,
+          "label": "PHI #7 (QB)",
+          "highlight": true,
+          "color": "#004C54"
+        },
+        {
+          "id": "bal_def",
+          "x": 55,
+          "y": 28,
+          "label": "BAL Defender",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "ref_1",
+          "x": 51,
+          "y": 62,
+          "label": "Referee",
+          "highlight": false,
+          "color": "#000000"
+        },
+        {
+          "id": "phi_johnson",
+          "x": 48,
+          "y": 95,
+          "label": "PHI Johnson",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "phi_70",
+          "x": 65,
+          "y": 95,
+          "label": "PHI #70 (OL)",
+          "highlight": false,
+          "color": "#004C54"
+        },
+        {
+          "id": "phi_86_sideline",
+          "x": 22,
+          "y": 10,
+          "label": "Sideline #86",
+          "highlight": false,
+          "color": "#A5ACAF"
+        },
+        {
+          "id": "phi_82_sideline",
+          "x": 53,
+          "y": 10,
+          "label": "Sideline #82",
+          "highlight": false,
+          "color": "#A5ACAF"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [8, 40],
+          "to": [25, 40],
+          "color": "#004C54",
+          "label": "Walking to Huddle"
+        },
+        {
+          "from": [51, 62],
+          "to": [65, 62],
+          "color": "#FFFF00",
+          "label": "Repositioning"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 50,
+          "y": 50,
+          "term": "Dead Ball",
+          "definition": "The period between football plays when the ball is not live and players are substituting or regrouping."
+        },
+        {
+          "x": 20,
+          "y": 10,
+          "term": "Sideline",
+          "definition": "The area outside the playing field where coaches, staff, and substitute players stand."
+        }
+      ]
+    },
+    {
+      "timestamp": 11.49,
+      "players": [
+        {
+          "id": "raven_wr_4",
+          "x": 53,
+          "y": 45,
+          "label": "WR",
+          "highlight": true,
+          "color": "#241773"
+        },
+        {
+          "id": "eagle_ol_74",
+          "x": 28,
+          "y": 90,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "eagle_ol_unknown",
+          "x": 40,
+          "y": 90,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "referee",
+          "x": 6,
+          "y": 65,
+          "label": "REF",
+          "highlight": false,
+          "color": "#000000"
+        },
+        {
+          "id": "sideline_86",
+          "x": 3,
+          "y": 15,
+          "label": "Player",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "sideline_82",
+          "x": 33,
+          "y": 12,
+          "label": "Player",
+          "highlight": false,
+          "color": "#FFFFFF"
+        }
+      ],
+      "arrows": [],
+      "terminology": [
+        {
+          "x": 50,
+          "y": 10,
+          "term": "Sideline",
+          "definition": "The area along the long edges of the field where coaches, staff, and substitute players stand."
+        },
+        {
+          "x": 50,
+          "y": 95,
+          "term": "Score Bug",
+          "definition": "A digital on-screen graphic displaying the game score, time remaining, quarter, and other statistical information."
+        }
+      ]
+    },
+    {
+      "timestamp": 12.21,
+      "players": [
+        {
+          "id": "off_87",
+          "x": 7.5,
+          "y": 32,
+          "label": "TE",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_18",
+          "x": 28,
+          "y": 42,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_74",
+          "x": 34,
+          "y": 34,
+          "label": "LT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_78",
+          "x": 44,
+          "y": 37,
+          "label": "LG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_64",
+          "x": 55,
+          "y": 34,
+          "label": "C",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_56",
+          "x": 66,
+          "y": 35,
+          "label": "RG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_72",
+          "x": 75,
+          "y": 34,
+          "label": "RT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_7",
+          "x": 56,
+          "y": 48,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_38",
+          "x": 70,
+          "y": 46,
+          "label": "RB",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_cb_1",
+          "x": 2,
+          "y": 15,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s_1",
+          "x": 12,
+          "y": 4,
+          "label": "S",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_51",
+          "x": 32,
+          "y": 17,
+          "label": "LB",
+          "highlight": true,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_1",
+          "x": 36,
+          "y": 30,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_2",
+          "x": 62,
+          "y": 29,
+          "label": "DT",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_3",
+          "x": 74,
+          "y": 31,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_cb_2",
+          "x": 88,
+          "y": 28,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s_2",
+          "x": 84,
+          "y": 4,
+          "label": "S",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "ref_1",
+          "x": 13,
+          "y": 80,
+          "label": "Ref",
+          "highlight": false,
+          "color": "#000000"
+        },
+        {
+          "id": "ref_2",
+          "x": 94,
+          "y": 80,
+          "label": "Ref",
+          "highlight": false,
+          "color": "#000000"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [55, 34],
+          "to": [56, 48],
+          "color": "#FFD700",
+          "label": "Snap"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 56,
+          "y": 48,
+          "term": "Shotgun Formation",
+          "definition": "The quarterback lines up several yards behind the center to receive the snap, allowing better visibility of the defense."
+        },
+        {
+          "x": 28,
+          "y": 42,
+          "term": "Slot Receiver",
+          "definition": "A wide receiver lined up between the offensive line and the widest receiver, typically used for quick passes."
+        },
+        {
+          "x": 55,
+          "y": 34,
+          "term": "Line of Scrimmage",
+          "definition": "The imaginary line separating the offense and defense where the ball is placed before the play begins."
+        }
+      ]
+    },
+    {
+      "timestamp": 12.93,
+      "players": [
+        {
+          "id": "wr_87",
+          "x": 5,
+          "y": 34,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "cb_left",
+          "x": 10,
+          "y": 5,
+          "label": "CB",
+          "highlight": false,
+          "color": "#330066"
+        },
+        {
+          "id": "wr_18",
+          "x": 17,
+          "y": 39,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_slot",
+          "x": 16,
+          "y": 28,
+          "label": "DB",
+          "highlight": false,
+          "color": "#330066"
+        },
+        {
+          "id": "def_edge_left",
+          "x": 29,
+          "y": 21,
+          "label": "DE",
+          "highlight": false,
+          "color": "#330066"
+        },
+        {
+          "id": "ol_74",
+          "x": 31,
+          "y": 35,
+          "label": "LT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_dt",
+          "x": 34,
+          "y": 30,
+          "label": "DT",
+          "highlight": false,
+          "color": "#330066"
+        },
+        {
+          "id": "ol_lg",
+          "x": 41,
+          "y": 35,
+          "label": "LG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_64",
+          "x": 52,
+          "y": 32,
+          "label": "C",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "qb_7",
+          "x": 54,
+          "y": 48,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_lb_mid",
+          "x": 60,
+          "y": 27,
+          "label": "LB",
+          "highlight": false,
+          "color": "#330066"
+        },
+        {
+          "id": "def_s_deep",
+          "x": 64,
+          "y": 15,
+          "label": "S",
+          "highlight": false,
+          "color": "#330066"
+        },
+        {
+          "id": "ol_56",
+          "x": 63,
+          "y": 33,
+          "label": "RG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "rb_38",
+          "x": 67,
+          "y": 45,
+          "label": "RB",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_72",
+          "x": 77,
+          "y": 37,
+          "label": "RT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_cb_right",
+          "x": 82,
+          "y": 5,
+          "label": "CB",
+          "highlight": false,
+          "color": "#330066"
+        },
+        {
+          "id": "def_edge_right",
+          "x": 85,
+          "y": 30,
+          "label": "DE",
+          "highlight": false,
+          "color": "#330066"
+        },
+        {
+          "id": "ref_left",
+          "x": 12,
+          "y": 80,
+          "label": "Ref",
+          "highlight": false,
+          "color": "#000000"
+        },
+        {
+          "id": "ref_right",
+          "x": 93,
+          "y": 80,
+          "label": "Ref",
+          "highlight": false,
+          "color": "#000000"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [52, 32],
+          "to": [54, 48],
+          "color": "#FFFF00",
+          "label": "Snap"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 54,
+          "y": 48,
+          "term": "Shotgun Formation",
+          "definition": "An offensive formation where the quarterback lines up several yards behind the center to receive the snap, offering a better view of the defense."
+        },
+        {
+          "x": 52,
+          "y": 32,
+          "term": "Center",
+          "definition": "The offensive lineman who snaps the ball to the quarterback to start the play."
+        },
+        {
+          "x": 17,
+          "y": 39,
+          "term": "Slot Receiver",
+          "definition": "A wide receiver lined up between the offensive line and the widest receiver, typically used for quick passes."
+        }
+      ]
+    },
+    {
+      "timestamp": 13.65,
+      "players": [
+        {
+          "id": "qb_7",
+          "x": 49,
+          "y": 52,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_74",
+          "x": 27,
+          "y": 40,
+          "label": "LT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_xx",
+          "x": 35,
+          "y": 39,
+          "label": "LG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_64",
+          "x": 46,
+          "y": 37,
+          "label": "C",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_56",
+          "x": 56,
+          "y": 35,
+          "label": "RG",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol_72",
+          "x": 72,
+          "y": 38,
+          "label": "RT",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "wr_18",
+          "x": 12,
+          "y": 40,
+          "label": "WR",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "te_87",
+          "x": 3,
+          "y": 24,
+          "label": "TE",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_down",
+          "x": 67,
+          "y": 53,
+          "label": "RB/OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_cb_1",
+          "x": 16,
+          "y": 30,
+          "label": "CB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb_1",
+          "x": 25,
+          "y": 18,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb_2",
+          "x": 63,
+          "y": 16,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_s_1",
+          "x": 82,
+          "y": 5,
+          "label": "S",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_1",
+          "x": 30,
+          "y": 38,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_2",
+          "x": 46,
+          "y": 35,
+          "label": "DT",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_3",
+          "x": 58,
+          "y": 33,
+          "label": "DE",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "ref_1",
+          "x": 10,
+          "y": 85,
+          "label": "REF",
+          "highlight": false,
+          "color": "#000000"
+        },
+        {
+          "id": "ref_2",
+          "x": 90,
+          "y": 85,
+          "label": "REF",
+          "highlight": false,
+          "color": "#000000"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [49, 52],
+          "to": [25, 45],
+          "color": "#FFFF00",
+          "label": "Vision"
+        },
+        {
+          "from": [12, 40],
+          "to": [12, 25],
+          "color": "#FFFFFF",
+          "label": "Route"
+        },
+        {
+          "from": [30, 38],
+          "to": [40, 45],
+          "color": "#FF0000",
+          "label": "Rush"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 49,
+          "y": 45,
+          "term": "Pocket",
+          "definition": "Protective area formed by offensive linemen around the quarterback."
+        },
+        {
+          "x": 25,
+          "y": 18,
+          "term": "Zone Coverage",
+          "definition": "Defenders dropping back to cover specific areas rather than specific players."
+        }
+      ]
+    },
+    {
+      "timestamp": 14.37,
+      "players": [],
+      "arrows": [],
+      "terminology": []
+    },
+    {
+      "timestamp": 15.08,
+      "players": [
+        {
+          "id": "off_qb",
+          "x": 58,
+          "y": 58,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_wr_top",
+          "x": 13,
+          "y": 8,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_wr_mid",
+          "x": 5,
+          "y": 27,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_te_cross",
+          "x": 51,
+          "y": 24,
+          "label": "TE/WR",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_ol_56",
+          "x": 60,
+          "y": 39,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_ol_72",
+          "x": 68,
+          "y": 39,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "off_ol_left",
+          "x": 34,
+          "y": 50,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_db_deep",
+          "x": 86,
+          "y": 19,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_lb_mid",
+          "x": 46,
+          "y": 20,
+          "label": "LB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "def_dl_rush1",
+          "x": 62,
+          "y": 36,
+          "label": "DL",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "ref_left",
+          "x": 19,
+          "y": 77,
+          "label": "REF",
+          "highlight": false,
+          "color": "#000000"
+        },
+        {
+          "id": "ref_right",
+          "x": 91,
+          "y": 77,
+          "label": "REF",
+          "highlight": false,
+          "color": "#000000"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [58, 58],
+          "to": [65, 65],
+          "color": "#FFFF00",
+          "label": "Drop Back"
+        },
+        {
+          "from": [51, 24],
+          "to": [65, 20],
+          "color": "#FFFF00",
+          "label": "Crossing Route"
+        },
+        {
+          "from": [13, 8],
+          "to": [13, 2],
+          "color": "#FFFF00",
+          "label": "Deep Route"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 64,
+          "y": 45,
+          "term": "Pocket",
+          "definition": "Protected area formed by offensive linemen for the QB to pass."
+        },
+        {
+          "x": 86,
+          "y": 15,
+          "term": "Deep Coverage",
+          "definition": "Defensive back positioning to prevent long passes."
+        }
+      ]
+    },
+    {
+      "timestamp": 15.8,
+      "players": [
+        {
+          "id": "def_cb1",
+          "x": 2,
+          "y": 15,
+          "label": "CB",
+          "highlight": false,
+          "color": "#4F2683"
+        },
+        {
+          "id": "wr1",
+          "x": 10,
+          "y": 20,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_lb1",
+          "x": 54,
+          "y": 18,
+          "label": "LB",
+          "highlight": false,
+          "color": "#4F2683"
+        },
+        {
+          "id": "wr2",
+          "x": 64,
+          "y": 22,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_s1",
+          "x": 84,
+          "y": 16,
+          "label": "S",
+          "highlight": false,
+          "color": "#4F2683"
+        },
+        {
+          "id": "def_dl1",
+          "x": 58,
+          "y": 35,
+          "label": "DL",
+          "highlight": false,
+          "color": "#4F2683"
+        },
+        {
+          "id": "def_dl2",
+          "x": 53,
+          "y": 36,
+          "label": "DL",
+          "highlight": false,
+          "color": "#4F2683"
+        },
+        {
+          "id": "ol1",
+          "x": 50,
+          "y": 39,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol2",
+          "x": 56,
+          "y": 41,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "qb1",
+          "x": 60,
+          "y": 53,
+          "label": "QB",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ol3",
+          "x": 43,
+          "y": 55,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_lb2",
+          "x": 39,
+          "y": 48,
+          "label": "LB",
+          "highlight": false,
+          "color": "#4F2683"
+        },
+        {
+          "id": "ol4",
+          "x": 27,
+          "y": 55,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_dl3",
+          "x": 21,
+          "y": 52,
+          "label": "DL",
+          "highlight": false,
+          "color": "#4F2683"
+        },
+        {
+          "id": "ol5",
+          "x": 20,
+          "y": 58,
+          "label": "OL",
+          "highlight": false,
+          "color": "#FFFFFF"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [60, 53],
+          "to": [68, 50],
+          "color": "#FFFF00",
+          "label": "Run Path"
+        },
+        {
+          "from": [64, 22],
+          "to": [75, 20],
+          "color": "#FFFFFF",
+          "label": "Blocking"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 65,
+          "y": 65,
+          "term": "Line to Gain",
+          "definition": "The yellow line indicating the distance required for a first down."
+        },
+        {
+          "x": 60,
+          "y": 53,
+          "term": "Scramble",
+          "definition": "The quarterback running with the ball to gain yardage."
+        }
+      ]
+    },
+    {
+      "timestamp": 16.52,
+      "players": [
+        {
+          "id": "ret_1",
+          "x": 97,
+          "y": 42,
+          "label": "RET",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "gnr_1",
+          "x": 62,
+          "y": 17,
+          "label": "GNR",
+          "highlight": false,
+          "color": "#332a45"
+        },
+        {
+          "id": "blk_1",
+          "x": 44,
+          "y": 20,
+          "label": "BLK",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "cov_1",
+          "x": 36,
+          "y": 15,
+          "label": "COV",
+          "highlight": false,
+          "color": "#332a45"
+        },
+        {
+          "id": "blk_2",
+          "x": 35,
+          "y": 58,
+          "label": "BLK",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "cov_2",
+          "x": 29,
+          "y": 34,
+          "label": "COV",
+          "highlight": false,
+          "color": "#332a45"
+        },
+        {
+          "id": "blk_3",
+          "x": 20,
+          "y": 38,
+          "label": "BLK",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "group_los",
+          "x": 5,
+          "y": 55,
+          "label": "LINE",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "ref_1",
+          "x": 40,
+          "y": 80,
+          "label": "REF",
+          "highlight": false,
+          "color": "#000000"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [62, 17],
+          "to": [90, 35],
+          "color": "#FFFF00",
+          "label": "Pursuit"
+        },
+        {
+          "from": [87, 30],
+          "to": [97, 40],
+          "color": "#FFA500",
+          "label": "Ball Drop"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 97,
+          "y": 35,
+          "term": "Punt Returner",
+          "definition": "The player positioned deep to catch the punted ball and attempt to run it back."
+        },
+        {
+          "x": 62,
+          "y": 12,
+          "term": "Gunner",
+          "definition": "A defensive player (kicking team) who releases wide to sprint downfield and tackle the returner."
+        }
+      ]
+    },
+    {
+      "timestamp": 17.24,
+      "players": [
+        {
+          "id": "off_1",
+          "x": 1.5,
+          "y": 8,
+          "label": "WR",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_1",
+          "x": 27.5,
+          "y": 18,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "off_2",
+          "x": 57,
+          "y": 39,
+          "label": "Ball Carrier",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_2",
+          "x": 61.5,
+          "y": 35,
+          "label": "Defender",
+          "highlight": true,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [27.5, 18],
+          "to": [55, 35],
+          "color": "#241773",
+          "label": "Pursuit"
+        },
+        {
+          "from": [57, 39],
+          "to": [65, 45],
+          "color": "#FFFFFF",
+          "label": "Direction"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 65,
+          "y": 30,
+          "term": "Open Field Tackle",
+          "definition": "A one-on-one situation where a defender must bring down the ball carrier without immediate support from teammates."
+        }
+      ]
+    },
+    {
+      "timestamp": 17.96,
+      "players": [
+        {
+          "id": "def_1",
+          "x": 27,
+          "y": 18,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "off_1",
+          "x": 41,
+          "y": 30,
+          "label": "WR",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_2",
+          "x": 43,
+          "y": 53,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [41, 30],
+          "to": [48, 45],
+          "color": "#FFFF00",
+          "label": "Momentum"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 50,
+          "y": 45,
+          "term": "Open Field Tackle",
+          "definition": "A defensive play where a defender brings down the ball carrier in open space without assistance from teammates."
+        }
+      ]
+    },
+    {
+      "timestamp": 18.68,
+      "players": [
+        {
+          "id": "off_1",
+          "x": 4,
+          "y": 8,
+          "label": "Offense",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "def_support",
+          "x": 37,
+          "y": 24,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "ball_carrier",
+          "x": 42,
+          "y": 44,
+          "label": "WR",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "tackler",
+          "x": 39,
+          "y": 61,
+          "label": "DB",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [37, 24],
+          "to": [40, 40],
+          "color": "#241773",
+          "label": "Pursuit"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 50,
+          "y": 55,
+          "term": "Open Field Tackle",
+          "definition": "A defensive play where a tackler brings down the ball carrier in open space without immediate assistance."
+        }
+      ]
+    },
+    {
+      "timestamp": 19.39,
+      "players": [
+        {
+          "id": "purple_standing",
+          "x": 4,
+          "y": 28,
+          "label": "Purple Player (Standing)",
+          "highlight": false,
+          "color": "#241773"
+        },
+        {
+          "id": "white_runner",
+          "x": 15,
+          "y": 8,
+          "label": "White Player (Running)",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "purple_tackler",
+          "x": 47,
+          "y": 17,
+          "label": "Purple Defender #23",
+          "highlight": true,
+          "color": "#241773"
+        },
+        {
+          "id": "white_carrier",
+          "x": 42,
+          "y": 32,
+          "label": "Ball Carrier",
+          "highlight": true,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "purple_slider",
+          "x": 38,
+          "y": 58,
+          "label": "Purple Defender (Sliding)",
+          "highlight": false,
+          "color": "#241773"
+        }
+      ],
+      "arrows": [
+        {
+          "from": [55, 15],
+          "to": [47, 25],
+          "color": "#241773",
+          "label": "Tackle Angle"
+        },
+        {
+          "from": [50, 65],
+          "to": [40, 60],
+          "color": "#241773",
+          "label": "Pursuit"
+        }
+      ],
+      "terminology": [
+        {
+          "x": 44,
+          "y": 25,
+          "term": "Gang Tackle",
+          "definition": "When multiple defensive players converge to bring down the ball carrier."
+        },
+        {
+          "x": 38,
+          "y": 65,
+          "term": "Pursuit",
+          "definition": "Defenders chasing the ball carrier to assist in the tackle or prevent further yardage."
+        }
+      ]
+    },
+    {
+      "timestamp": 20.11,
+      "players": [
+        {
+          "id": "def_2",
+          "x": 48,
+          "y": 45,
+          "label": "DB",
+          "highlight": true,
+          "color": "#241773"
+        },
+        {
+          "id": "player_bg_right",
+          "x": 75,
+          "y": 12,
+          "label": "Player",
+          "highlight": false,
+          "color": "#FFFFFF"
+        },
+        {
+          "id": "player_bg_left",
+          "x": 5,
+          "y": 40,
+          "label": "Player",
+          "highlight": false,
+          "color": "#FFFFFF"
+        }
+      ],
+      "arrows": [],
+      "terminology": [
+        {
+          "x": 48,
+          "y": 45,
+          "term": "Defensive Stance",
+          "definition": "The defensive back is in a low, athletic position with knees bent and hips sunk, ready to react to the offense's movement."
+        }
+      ]
+    },
+    {
+      "timestamp": 20.83,
+      "players": [
+        {
+          "id": "ravens_2",
+          "x": 55,
+          "y": 50,
+          "label": "Ravens #2",
+          "highlight": true,
+          "color": "#241773"
+        },
+        {
+          "id": "opponent_bg",
+          "x": 10,
+          "y": 25,
+          "label": "Opponent",
+          "highlight": false,
+          "color": "#FFFFFF"
+        }
+      ],
+      "arrows": [],
+      "terminology": []
+    }
+  ]
+};
