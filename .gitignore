@@ -1,0 +1,18 @@
+node_modules/
+dist/
+tmp/
+.env
+*.log
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Test videos (can be large files)
+videos/*.mp4
+videos/*.mov
+videos/*.avi
+videos/*.mkv
+videos/*.webm
+videos/*.m4v
+!videos/README.md
