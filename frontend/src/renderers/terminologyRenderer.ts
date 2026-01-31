@@ -1,5 +1,6 @@
 import { InterpolatedTerminology, CanvasDimensions } from '../types/annotations';
 import { toCanvasCoords } from '../utils/coordinates';
+import { calculateTerminologyPosition } from '../utils/tooltipPositioning';
 
 /**
  * Wrap text to fit within a maximum width
@@ -43,7 +44,7 @@ export const renderTerminology = (
   for (const term of terminology) {
     if (term.opacity <= 0) continue;
 
-    const pos = toCanvasCoords({ x: term.x, y: term.y }, dimensions);
+    const anchorPos = toCanvasCoords({ x: term.x, y: term.y }, dimensions);
 
     // Responsive sizing
     const titleFontSize = Math.max(14, dimensions.width * 0.018);
@@ -66,8 +67,17 @@ export const renderTerminology = (
     const boxWidth = Math.max(titleWidth + padding * 2, maxWidth);
     const boxHeight = titleFontSize + defHeight + padding * 2.5;
 
+    // Calculate viewport-aware position
+    const boxPos = calculateTerminologyPosition(
+      anchorPos.x,
+      anchorPos.y,
+      boxWidth,
+      boxHeight,
+      dimensions
+    );
+
     // Draw box with gradient background
-    const gradient = ctx.createLinearGradient(pos.x, pos.y, pos.x, pos.y + boxHeight);
+    const gradient = ctx.createLinearGradient(boxPos.x, boxPos.y, boxPos.x, boxPos.y + boxHeight);
     gradient.addColorStop(0, 'rgba(30, 41, 59, 0.95)');
     gradient.addColorStop(1, 'rgba(15, 23, 42, 0.98)');
 
@@ -78,7 +88,7 @@ export const renderTerminology = (
     ctx.shadowOffsetY = 8;
 
     ctx.beginPath();
-    ctx.roundRect(pos.x, pos.y, boxWidth, boxHeight, 10);
+    ctx.roundRect(boxPos.x, boxPos.y, boxWidth, boxHeight, 10);
     ctx.fillStyle = gradient;
     ctx.fill();
 
@@ -90,7 +100,7 @@ export const renderTerminology = (
 
     // Accent bar on left side
     ctx.beginPath();
-    ctx.roundRect(pos.x, pos.y, 4, boxHeight, [10, 0, 0, 10]);
+    ctx.roundRect(boxPos.x, boxPos.y, 4, boxHeight, [10, 0, 0, 10]);
     ctx.fillStyle = '#6366f1';
     ctx.fill();
 
@@ -99,14 +109,14 @@ export const renderTerminology = (
     ctx.fillStyle = '#a5b4fc'; // Indigo-300
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    ctx.fillText(term.term, pos.x + padding + 4, pos.y + padding);
+    ctx.fillText(term.term, boxPos.x + padding + 4, boxPos.y + padding);
 
     // Definition
     ctx.font = `${defFontSize}px Inter, sans-serif`;
     ctx.fillStyle = '#e2e8f0'; // Slate-200
-    let yOffset = pos.y + padding + titleFontSize + 8;
+    let yOffset = boxPos.y + padding + titleFontSize + 8;
     for (const line of defLines) {
-      ctx.fillText(line, pos.x + padding + 4, yOffset);
+      ctx.fillText(line, boxPos.x + padding + 4, yOffset);
       yOffset += lineHeight;
     }
 

@@ -2,10 +2,13 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { AnnotationCanvas } from '../AnnotationCanvas';
 import { TermsButton } from '../TermsButton';
 import { TermsDrawer } from '../TermsDrawer';
+import { PlayTermsButton } from '../PlayTermsButton';
+import { PlayTermsModal } from '../PlayTermsModal';
 import { useCanvasResize } from '../../hooks/useCanvasResize';
 import { useAnnotationFrames } from '../../hooks/useAnnotationFrames';
 import { AnnotationData, InterpolatedFrame, TerminologyAnnotation, PlayerAnnotation, ArrowAnnotation } from '../../types/annotations';
 import { BroadcastOverlayManager } from '../../utils/broadcastOverlayManager';
+import { extractPlayTerms } from '../../utils/playTermsExtractor';
 import styles from './VideoPlayer.module.css';
 
 interface VideoPlayerProps {
@@ -41,6 +44,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isTermsDrawerOpen, setIsTermsDrawerOpen] = useState(false);
   const [learnMode, setLearnMode] = useState(false); // Learn mode toggle for terminology popups
+  const [isPlayTermsModalOpen, setIsPlayTermsModalOpen] = useState(false);
 
   // Canvas dimensions for annotation positioning
   const dimensions = useCanvasResize(playerWrapperRef, videoRef, canvasRef);
@@ -119,6 +123,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     ) || annotations.frames[0];
     return currentFrame?.terminology || [];
   }, [annotations, currentTime]);
+
+  // Extract play-specific terms from all frames
+  const playTerms = useMemo(() => {
+    return extractPlayTerms(annotations);
+  }, [annotations]);
 
   // Sync current time during playback using requestAnimationFrame
   useEffect(() => {
@@ -366,6 +375,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           visible={annotationsVisible && isReady}
         />
 
+        {/* Play Terms Button - always visible when annotations are visible */}
+        {annotationsVisible && playTerms.length > 0 && (
+          <PlayTermsButton
+            termCount={playTerms.length}
+            onClick={() => setIsPlayTermsModalOpen(true)}
+          />
+        )}
+
         {/* Terms Button - only show in learn mode */}
         {annotationsVisible && learnMode && allTermsForCurrentFrame.length > 0 && (
           <TermsButton
@@ -373,6 +390,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             onClick={() => setIsTermsDrawerOpen(true)}
           />
         )}
+
+        {/* Play Terms Modal */}
+        <PlayTermsModal
+          isOpen={isPlayTermsModalOpen}
+          onClose={() => setIsPlayTermsModalOpen(false)}
+          terms={playTerms}
+        />
 
         {/* Terms Drawer - only show in learn mode */}
         {learnMode && (

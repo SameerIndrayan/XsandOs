@@ -1,4 +1,4 @@
-import { AnnotationFrame } from '../schema/contract';
+import { AnnotationFrame, EditorialCallout } from '../schema/contract';
 import type { AnalyzeResponse } from '../schema/contract';
 import { COLORS } from '../utils/hex';
 import { clampPercent } from '../utils/percent';
@@ -77,6 +77,36 @@ function generateMockFrame(timestamp: number): AnnotationFrame {
 }
 
 /**
+ * Generates mock editorial callouts (broadcast-style: action/outcome concepts)
+ */
+function generateMockCallouts(): EditorialCallout[] {
+  return [
+    {
+      id: 'callout_1',
+      start_time: 1.0,
+      end_time: 4.5, // >= 3.0s duration
+      text: 'Pursuit',
+      detail: 'Defensive pursuit angle cuts off the running lane, forcing the ball carrier inside.',
+      anchor: {
+        x: 65,
+        y: 55,
+      },
+    },
+    {
+      id: 'callout_2',
+      start_time: 5.0,
+      end_time: 8.5, // >= 3.0s duration, staggered
+      text: 'Downfield Blocking',
+      detail: 'Wide receiver seals the edge, creating space for the ball carrier.',
+      anchor: {
+        x: 70,
+        y: 45,
+      },
+    },
+  ];
+}
+
+/**
  * Generates mock response with keyframes at regular intervals
  */
 export function generateMockResponse(interval: number = 0.5): AnalyzeResponse {
@@ -88,10 +118,14 @@ export function generateMockResponse(interval: number = 0.5): AnalyzeResponse {
     frames.push(generateMockFrame(timestamp));
   }
 
+  // Generate editorial callouts
+  const callouts = generateMockCallouts();
+
   return {
     video_duration: MOCK_VIDEO_DURATION,
     video_url: '', // Will be set by route handler
     play_summary: 'Mock play summary: Sample football play with offensive and defensive players demonstrating formation and route patterns.',
     frames,
+    callouts,
   };
 }

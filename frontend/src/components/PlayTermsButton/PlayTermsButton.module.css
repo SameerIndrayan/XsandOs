@@ -1,0 +1,55 @@
+.playTermsButton {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1.5px solid rgba(99, 102, 241, 0.6);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.playTermsButton:hover {
+  background: rgba(30, 41, 59, 0.98);
+  border-color: rgba(99, 102, 241, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.playTermsButton:active {
+  transform: translateY(0);
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: rgba(99, 102, 241, 0.9);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+}

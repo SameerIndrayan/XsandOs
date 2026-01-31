@@ -1,5 +1,6 @@
 import { InterpolatedArrow, CanvasDimensions } from '../types/annotations';
 import { toCanvasCoords } from '../utils/coordinates';
+import { calculateArrowLabelPosition } from '../utils/tooltipPositioning';
 
 /**
  * Render movement arrows on the canvas
@@ -61,8 +62,6 @@ export const renderArrows = (
 
     // Draw label if present
     if (arrow.label) {
-      const midX = (from.x + to.x) / 2;
-      const midY = (from.y + to.y) / 2;
       const fontSize = Math.max(11, dimensions.width * 0.012);
 
       ctx.shadowColor = 'transparent';
@@ -74,12 +73,23 @@ export const renderArrows = (
       const pillHeight = fontSize + padding * 2;
       const pillWidth = textMetrics.width + padding * 3;
 
+      // Calculate viewport-aware position
+      const labelPos = calculateArrowLabelPosition(
+        from.x,
+        from.y,
+        to.x,
+        to.y,
+        pillWidth,
+        pillHeight,
+        dimensions
+      );
+
       // Background pill
       ctx.beginPath();
       const pillRadius = pillHeight / 2;
       ctx.roundRect(
-        midX - pillWidth / 2,
-        midY - pillHeight / 2,
+        labelPos.x,
+        labelPos.y,
         pillWidth,
         pillHeight,
         pillRadius
@@ -96,7 +106,7 @@ export const renderArrows = (
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(arrow.label, midX, midY);
+      ctx.fillText(arrow.label, labelPos.x + pillWidth / 2, labelPos.y + pillHeight / 2);
     }
 
     ctx.restore();

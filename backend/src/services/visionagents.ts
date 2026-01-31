@@ -1,6 +1,7 @@
 import { ExtractedFrame, VideoMeta } from './frames';
-import { AnnotationFrame } from '../schema/contract';
+import { AnnotationFrame, EditorialCallout } from '../schema/contract';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateEditorialCallouts } from './editorialCallouts';
 
 /**
  * VisionAgents integration service
@@ -11,6 +12,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 interface VisionAgentsResponse {
   frames: AnnotationFrame[];
   play_summary: string;
+  callouts: EditorialCallout[];
 }
 
 /**
@@ -42,6 +44,7 @@ export async function analyzeWithVisionAgents(
 
   // Build prompt inspired by working googleJAN31 implementation
   // Simpler, more direct approach that works better with Gemini
+  // NOTE: We no longer generate terminology in frames - only formations as editorial callouts
   const systemPrompt = `Analyze this football play image. Identify all visible players (both offense and defense), their positions, and any movement patterns.
 
 Return a JSON object with this exact structure:
@@ -64,15 +67,10 @@ Return a JSON object with this exact structure:
       "label": "string (optional)"
     }
   ],
-  "terminology": [
-    {
-      "x": number (0-100),
-      "y": number (0-100),
-      "term": "string",
-      "definition": "string"
-    }
-  ]
+  "terminology": []
 }
+
+IMPORTANT: Always return an empty "terminology" array. Formations will be handled separately as editorial callouts.
 
 Return ONLY valid JSON, no markdown, no code blocks, no explanations.`;
 
@@ -197,8 +195,18 @@ Return ONLY valid JSON, no markdown, no code blocks, no explanations.`;
 
   console.log(`Gemini Vision analysis complete: ${allFrames.length} frames processed, summary length=${playSummary.length}`);
 
+  // Generate editorial callouts (time-based, not frame-based)
+  let callouts: EditorialCallout[] = [];
+  try {
+    callouts = await generateEditorialCallouts(frames, allFrames, videoMeta, playSummary);
+  } catch (error) {
+    console.error('Error generating editorial callouts:', error);
+    // Continue without callouts rather than failing
+  }
+
   return {
     frames: allFrames,
     play_summary: playSummary,
+    callouts,
   };
 }

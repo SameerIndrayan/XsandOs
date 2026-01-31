@@ -163,13 +163,14 @@ router.post('/analyze', upload.single('video'), async (req: Request, res: Respon
         // Step 2: Analyze with VisionAgents
         const visionAgentsResult = await analyzeWithVisionAgents(extractedFrames, meta);
 
-        // Step 3: Build response
-        response = {
-          video_duration: meta.durationSec,
-          video_url: responseVideoUrl,
-          play_summary: visionAgentsResult.play_summary,
-          frames: visionAgentsResult.frames,
-        };
+            // Step 3: Build response
+            response = {
+              video_duration: meta.durationSec,
+              video_url: responseVideoUrl,
+              play_summary: visionAgentsResult.play_summary,
+              frames: visionAgentsResult.frames,
+              callouts: visionAgentsResult.callouts || [],
+            };
 
         // Step 4: Normalize
         response = normalizeResponse(response);
@@ -177,14 +178,17 @@ router.post('/analyze', upload.single('video'), async (req: Request, res: Respon
         console.log('VisionAgents analysis complete');
       } catch (error) {
         console.error('VisionAgents analysis failed, falling back to mock:', error);
-        // Fallback to mock with error field
-        response = generateMockResponse();
-        response.video_url = responseVideoUrl;
-        response.play_summary = 'Analysis failed - using mock data';
-        response.error = {
-          message: 'VisionAgents analysis failed',
-          details: error instanceof Error ? error.message : String(error),
-        };
+          // Fallback to mock with error field
+          response = generateMockResponse();
+          response.video_url = responseVideoUrl;
+          response.play_summary = 'Analysis failed - using mock data';
+          if (!response.callouts) {
+            response.callouts = [];
+          }
+          response.error = {
+            message: 'VisionAgents analysis failed',
+            details: error instanceof Error ? error.message : String(error),
+          };
       }
     } else {
       // VisionAgents not enabled - return mock with warning
@@ -192,11 +196,14 @@ router.post('/analyze', upload.single('video'), async (req: Request, res: Respon
       response = generateMockResponse();
       response.video_url = responseVideoUrl;
       response.play_summary = 'VisionAgents integration not enabled';
+      if (!response.callouts) {
+        response.callouts = [];
+      }
       response.error = {
         message: 'VisionAgents not implemented',
         details: {
           visionAgentsEnabled: visionAgentsEnabled,
-          note: 'Set VISIONAGENTS_ENABLED=1 and provide VISIONAGENTS_API_KEY to enable',
+          note: 'Set VISIONAGENTS_ENABLED=1 and provide GEMINI_API_KEY to enable',
         },
       };
     }

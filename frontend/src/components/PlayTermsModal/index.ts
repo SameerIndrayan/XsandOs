@@ -1,0 +1,1 @@
+export { PlayTermsModal } from './PlayTermsModal';

@@ -1,0 +1,1 @@
+export { PlayTermsButton } from './PlayTermsButton';
