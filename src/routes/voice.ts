@@ -60,22 +60,20 @@ router.post('/qa', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Question is required' });
     }
 
-    // Use provided context or fall back to latest analysis
-    const analysisContext = providedContext || latestAnalysisContext;
-
-    if (!analysisContext) {
-      return res.status(400).json({
-        error: 'No analysis context available. Please analyze a video first.',
-      });
-    }
+    // Use provided context, latest analysis, or a default context for general questions
+    const analysisContext = providedContext || latestAnalysisContext || {
+      playSummary: 'No video has been analyzed yet. Answering general football questions.',
+      videoDuration: 0,
+      frames: [],
+    };
 
     // Build Q&A context
     const qaContext: QAContext = {
       playSummary: analysisContext.playSummary || '',
       currentTimestamp: timestamp,
       videoDuration: analysisContext.videoDuration || 0,
-      currentFrame: getFrameAtTimestamp(analysisContext.frames, timestamp),
-      allFrames: analysisContext.frames,
+      currentFrame: analysisContext.frames ? getFrameAtTimestamp(analysisContext.frames, timestamp) : undefined,
+      allFrames: analysisContext.frames || [],
     };
 
     const response = await generateQAResponse(question, qaContext);
