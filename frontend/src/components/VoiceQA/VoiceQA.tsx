@@ -1,17 +1,23 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useWhisperRecording } from '../../hooks/useWhisperRecording';
+import { useElevenLabsTTS } from '../../hooks/useElevenLabsTTS';
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
 import { useTextToSpeech } from '../../hooks/useTextToSpeech';
+import { askQuestion } from '../../services/api';
 import { QAMessage, getAIResponse, generateMessageId } from '../../data/qaResponses';
 import styles from './VoiceQA.module.css';
 
 interface VoiceQAProps {
   videoTimestamp: number;
   onListeningChange?: (isListening: boolean) => void;
+  /** Use backend APIs (Whisper + Eleven Labs + Gemini) instead of browser APIs */
+  useBackendAPIs?: boolean;
 }
 
 export const VoiceQA: React.FC<VoiceQAProps> = ({
   videoTimestamp,
   onListeningChange,
+  useBackendAPIs = true, // Default to using backend APIs
 }) => {
   const [messages, setMessages] = useState<QAMessage[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -19,42 +25,79 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [textInput, setTextInput] = useState('');
+  const [currentTranscript, setCurrentTranscript] = useState('');
 
-  // Speech recognition hook
+  // Whisper recording hook (backend API)
   const {
-    isListening,
-    transcript,
-    startListening,
-    stopListening,
-    isSupported: speechSupported,
-    error: speechError,
-  } = useSpeechRecognition({
-    onResult: handleVoiceResult,
+    isRecording: isWhisperRecording,
+    isTranscribing,
+    startRecording: startWhisperRecording,
+    stopRecording: stopWhisperRecording,
+    error: whisperError,
+    isSupported: whisperSupported,
+  } = useWhisperRecording({
+    onTranscription: (text) => {
+      if (text.trim()) {
+        processQuestion(text.trim());
+      }
+    },
     onStart: () => onListeningChange?.(true),
     onEnd: () => onListeningChange?.(false),
   });
 
-  // Text-to-speech hook
+  // Eleven Labs TTS hook (backend API)
   const {
-    speak,
-    stop: stopSpeaking,
-    isSpeaking,
-    isSupported: ttsSupported,
+    speak: elevenLabsSpeak,
+    stop: stopElevenLabs,
+    isSpeaking: isElevenLabsSpeaking,
+    isLoading: isTTSLoading,
+    error: elevenLabsError,
+  } = useElevenLabsTTS();
+
+  // Browser Speech Recognition hook (fallback)
+  const {
+    isListening: isBrowserListening,
+    transcript: browserTranscript,
+    startListening: startBrowserListening,
+    stopListening: stopBrowserListening,
+    isSupported: browserSpeechSupported,
+    error: browserSpeechError,
+  } = useSpeechRecognition({
+    onResult: (text) => {
+      if (!useBackendAPIs && text.trim()) {
+        processQuestion(text.trim());
+      }
+    },
+    onStart: () => {
+      if (!useBackendAPIs) onListeningChange?.(true);
+    },
+    onEnd: () => {
+      if (!useBackendAPIs) onListeningChange?.(false);
+    },
+  });
+
+  // Browser TTS hook (fallback)
+  const {
+    speak: browserSpeak,
+    stop: stopBrowserSpeaking,
+    isSpeaking: isBrowserSpeaking,
+    isSupported: browserTTSSupported,
   } = useTextToSpeech({
     rate: 1.0,
     pitch: 1.0,
   });
 
-  // Handle voice recognition result
-  function handleVoiceResult(text: string) {
-    if (text.trim()) {
-      processQuestion(text.trim());
-    }
-  }
+  // Unified state based on which API is being used
+  const isListening = useBackendAPIs ? isWhisperRecording : isBrowserListening;
+  const isSpeaking = useBackendAPIs ? isElevenLabsSpeaking : isBrowserSpeaking;
+  const speechSupported = useBackendAPIs ? whisperSupported : browserSpeechSupported;
+  const speechError = useBackendAPIs ? (whisperError || elevenLabsError) : browserSpeechError;
+  const transcript = useBackendAPIs ? currentTranscript : browserTranscript;
 
   // Process a question (from voice or text)
   const processQuestion = useCallback(async (question: string) => {
     setIsProcessing(true);
+    setCurrentTranscript('');
 
     // Add user message
     const userMessage: QAMessage = {
@@ -66,11 +109,23 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
     };
     setMessages(prev => [...prev, userMessage]);
 
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    let response: string;
 
-    // Get AI response
-    const response = getAIResponse(question, videoTimestamp);
+    if (useBackendAPIs) {
+      // Use Gemini API for dynamic response
+      try {
+        const qaResponse = await askQuestion(question, videoTimestamp);
+        response = qaResponse.answer;
+      } catch (error) {
+        console.error('Gemini Q&A error:', error);
+        // Fallback to local responses if API fails
+        response = getAIResponse(question, videoTimestamp);
+      }
+    } else {
+      // Use local keyword matching
+      await new Promise(resolve => setTimeout(resolve, 500));
+      response = getAIResponse(question, videoTimestamp);
+    }
 
     // Add assistant message
     const assistantMessage: QAMessage = {
@@ -83,13 +138,23 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
     setMessages(prev => [...prev, assistantMessage]);
 
     // Speak the response
-    if (ttsSupported) {
-      speak(response);
+    if (useBackendAPIs) {
+      try {
+        await elevenLabsSpeak(response);
+      } catch (error) {
+        console.error('Eleven Labs TTS error:', error);
+        // Fallback to browser TTS
+        if (browserTTSSupported) {
+          browserSpeak(response);
+        }
+      }
+    } else if (browserTTSSupported) {
+      browserSpeak(response);
     }
 
     setIsProcessing(false);
     setIsExpanded(true);
-  }, [videoTimestamp, speak, ttsSupported]);
+  }, [videoTimestamp, useBackendAPIs, elevenLabsSpeak, browserSpeak, browserTTSSupported]);
 
   // Handle text input submission
   const handleTextSubmit = useCallback((e: React.FormEvent) => {
@@ -101,14 +166,33 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
   }, [textInput, processQuestion]);
 
   // Toggle voice listening
-  const toggleListening = useCallback(() => {
-    if (isListening) {
-      stopListening();
+  const toggleListening = useCallback(async () => {
+    if (useBackendAPIs) {
+      if (isWhisperRecording) {
+        await stopWhisperRecording();
+      } else {
+        stopElevenLabs();
+        await startWhisperRecording();
+      }
     } else {
-      stopSpeaking(); // Stop any ongoing speech
-      startListening();
+      if (isBrowserListening) {
+        stopBrowserListening();
+      } else {
+        stopBrowserSpeaking();
+        startBrowserListening();
+      }
     }
-  }, [isListening, startListening, stopListening, stopSpeaking]);
+  }, [
+    useBackendAPIs,
+    isWhisperRecording,
+    startWhisperRecording,
+    stopWhisperRecording,
+    stopElevenLabs,
+    isBrowserListening,
+    startBrowserListening,
+    stopBrowserListening,
+    stopBrowserSpeaking,
+  ]);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -122,6 +206,10 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Show loading state during transcription
+  const showTranscribing = useBackendAPIs && isTranscribing;
+  const showTTSLoading = useBackendAPIs && isTTSLoading;
+
   return (
     <div className={`${styles.container} ${isExpanded ? styles.expanded : ''}`}>
       {/* Header */}
@@ -132,7 +220,10 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
             </svg>
           </div>
-          <span className={styles.headerTitle}>AI Play Assistant</span>
+          <span className={styles.headerTitle}>
+            AI Play Assistant
+            {useBackendAPIs && <span className={styles.apiIndicator}> (Gemini)</span>}
+          </span>
           {messages.length > 0 && (
             <span className={styles.messageCount}>{messages.length}</span>
           )}
@@ -141,7 +232,12 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
           {isListening && (
             <span className={styles.listeningBadge}>
               <span className={styles.listeningDot}></span>
-              Listening...
+              {showTranscribing ? 'Transcribing...' : 'Listening...'}
+            </span>
+          )}
+          {showTTSLoading && (
+            <span className={styles.listeningBadge}>
+              Generating voice...
             </span>
           )}
           <button className={styles.expandButton}>
@@ -164,7 +260,10 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
               </div>
               <p className={styles.emptyTitle}>Ask about the play!</p>
               <p className={styles.emptyText}>
-                Click the microphone and ask questions like "What formation is this?" or "Why did he fake the handoff?"
+                {useBackendAPIs
+                  ? 'Click the microphone to ask questions. Using Whisper for transcription, Gemini for answers, and Eleven Labs for voice.'
+                  : 'Click the microphone and ask questions like "What formation is this?" or "Why did he fake the handoff?"'
+                }
               </p>
             </div>
           ) : (
@@ -185,7 +284,7 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
                   <p className={styles.messageText}>{message.text}</p>
                 </div>
               ))}
-              {isProcessing && (
+              {(isProcessing || showTranscribing) && (
                 <div className={`${styles.message} ${styles.assistant}`}>
                   <div className={styles.typingIndicator}>
                     <span></span>
@@ -207,12 +306,12 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
               placeholder="Type a question..."
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              disabled={isListening || isProcessing}
+              disabled={isListening || isProcessing || showTranscribing}
             />
             <button
               type="submit"
               className={styles.sendButton}
-              disabled={!textInput.trim() || isProcessing}
+              disabled={!textInput.trim() || isProcessing || showTranscribing}
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -226,7 +325,7 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
       <button
         className={`${styles.voiceButton} ${isListening ? styles.listening : ''} ${isSpeaking ? styles.speaking : ''}`}
         onClick={toggleListening}
-        disabled={!speechSupported || isProcessing}
+        disabled={!speechSupported || isProcessing || showTranscribing}
         title={speechSupported ? (isListening ? 'Stop listening' : 'Ask a question') : 'Speech recognition not supported'}
       >
         <div className={styles.voiceButtonInner}>
@@ -244,7 +343,7 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
                 <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
               </svg>
             </>
-          ) : isSpeaking ? (
+          ) : isSpeaking || showTTSLoading ? (
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
             </svg>

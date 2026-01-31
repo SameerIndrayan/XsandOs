@@ -79,6 +79,13 @@
   color: var(--color-text);
 }
 
+.apiIndicator {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
 .messageCount {
   display: flex;
   align-items: center;

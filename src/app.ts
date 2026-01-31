@@ -1,6 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import * as path from 'path';
 import analyzeRouter from './routes/analyze';
+import voiceRouter from './routes/voice';
 import { ensureDir } from './utils/fs';
 
 /**
@@ -41,6 +42,7 @@ export function createApp(): Express {
 
   // API routes
   app.use('/api', analyzeRouter);
+  app.use('/api', voiceRouter);
 
   // Error handling
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

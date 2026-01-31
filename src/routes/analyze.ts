@@ -7,6 +7,7 @@ import { extractFrames } from '../services/frames';
 import { analyzeWithVisionAgents } from '../services/visionagents';
 import { normalizeResponse } from '../services/normalize';
 import { ensureDir, getFileExtension, removeDir } from '../utils/fs';
+import { updateAnalysisContext } from './voice';
 
 /**
  * Analyze route handler
@@ -204,7 +205,14 @@ router.post('/analyze', upload.single('video'), async (req: Request, res: Respon
     // Validate response with Zod before returning
     try {
       const validatedResponse = AnalyzeResponseSchema.parse(response);
-      
+
+      // Update analysis context for Q&A feature
+      updateAnalysisContext({
+        playSummary: validatedResponse.play_summary || '',
+        videoDuration: validatedResponse.video_duration,
+        frames: validatedResponse.frames,
+      });
+
       // Save response to files for GET endpoint
       try {
         const fs = await import('fs/promises');
@@ -216,7 +224,7 @@ router.post('/analyze', upload.single('video'), async (req: Request, res: Respon
         console.error('[Analyze] Failed to save response:', saveError);
         // Continue even if save fails
       }
-      
+
       return res.status(200).json(validatedResponse);
     } catch (validationError) {
       console.error('Response validation failed:', validationError);
