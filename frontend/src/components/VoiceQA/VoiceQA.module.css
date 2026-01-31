@@ -526,6 +526,18 @@
   max-width: 280px;
 }
 
+/* Error Banner (inline) */
+.errorBanner {
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: 0 var(--spacing-md) var(--spacing-sm);
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  color: #f87171;
+  animation: fadeIn 0.2s ease-out;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .container {
