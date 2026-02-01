@@ -1,17 +1,21 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition';
 import { useTextToSpeech } from '../../hooks/useTextToSpeech';
-import { QAMessage, getAIResponse, generateMessageId } from '../../data/qaResponses';
+import { QAMessage, generateMessageId } from '../../data/qaResponses';
 import styles from './VoiceQA.module.css';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 interface VoiceQAProps {
   videoTimestamp: number;
   onListeningChange?: (isListening: boolean) => void;
+  playSummary?: string;
 }
 
 export const VoiceQA: React.FC<VoiceQAProps> = ({
   videoTimestamp,
   onListeningChange,
+  playSummary,
 }) => {
   const [messages, setMessages] = useState<QAMessage[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -66,30 +70,70 @@ export const VoiceQA: React.FC<VoiceQAProps> = ({
     };
     setMessages(prev => [...prev, userMessage]);
 
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      // Build conversation history for context
+      const conversationHistory = messages.map(msg => ({
+        role: msg.type === 'user' ? 'user' : 'assistant' as const,
+        content: msg.text,
+      }));
 
-    // Get AI response
-    const response = getAIResponse(question, videoTimestamp);
+      // Call backend chat API
+      const response = await fetch(`${API_BASE}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question,
+          videoTimestamp,
+          conversationHistory,
+          playSummary,
+        }),
+      });
 
-    // Add assistant message
-    const assistantMessage: QAMessage = {
-      id: generateMessageId(),
-      type: 'assistant',
-      text: response,
-      timestamp: videoTimestamp,
-      createdAt: new Date(),
-    };
-    setMessages(prev => [...prev, assistantMessage]);
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
 
-    // Speak the response
-    if (ttsSupported) {
-      speak(response);
+      const data = await response.json();
+      const aiResponse = data.response || 'I apologize, but I couldn\'t generate a response. Please try again.';
+
+      // Add assistant message
+      const assistantMessage: QAMessage = {
+        id: generateMessageId(),
+        type: 'assistant',
+        text: aiResponse,
+        timestamp: videoTimestamp,
+        createdAt: new Date(),
+      };
+      setMessages(prev => [...prev, assistantMessage]);
+
+      // Speak the response
+      if (ttsSupported) {
+        speak(aiResponse);
+      }
+    } catch (error) {
+      console.error('Chat error:', error);
+      // Fallback response
+      const fallbackResponse = `I'm having trouble connecting to the AI service right now. At ${videoTimestamp.toFixed(1)} seconds, we're seeing the play develop. Try asking about formations, routes, or player movements!`;
+      
+      const assistantMessage: QAMessage = {
+        id: generateMessageId(),
+        type: 'assistant',
+        text: fallbackResponse,
+        timestamp: videoTimestamp,
+        createdAt: new Date(),
+      };
+      setMessages(prev => [...prev, assistantMessage]);
+
+      if (ttsSupported) {
+        speak(fallbackResponse);
+      }
+    } finally {
+      setIsProcessing(false);
+      setIsExpanded(true);
     }
-
-    setIsProcessing(false);
-    setIsExpanded(true);
-  }, [videoTimestamp, speak, ttsSupported]);
+  }, [videoTimestamp, speak, ttsSupported, messages]);
 
   // Handle text input submission
   const handleTextSubmit = useCallback((e: React.FormEvent) => {

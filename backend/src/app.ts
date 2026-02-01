@@ -1,6 +1,8 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import * as path from 'path';
 import analyzeRouter from './routes/analyze';
+import chatRouter from './routes/chat';
 import { ensureDir } from './utils/fs';
 
 /**
@@ -9,6 +11,12 @@ import { ensureDir } from './utils/fs';
 
 export function createApp(): Express {
   const app = express();
+
+  // CORS middleware
+  app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+  }));
 
   // Middleware
   app.use(express.json());
@@ -41,6 +49,7 @@ export function createApp(): Express {
 
   // API routes
   app.use('/api', analyzeRouter);
+  app.use('/api', chatRouter);
 
   // Error handling
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

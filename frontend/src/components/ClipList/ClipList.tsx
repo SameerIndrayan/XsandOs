@@ -34,8 +34,9 @@ export const ClipList: React.FC<ClipListProps> = ({ onSelectClip, selectedClipId
       setClips(data.clips || []);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load clips');
+      // Silently fail - don't show error for demo
       setClips([]);
+      setError(null);
     } finally {
       setLoading(false);
     }
@@ -46,61 +47,23 @@ export const ClipList: React.FC<ClipListProps> = ({ onSelectClip, selectedClipId
   }, []);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    // For hackathon demo: Button is visible but does nothing
+    // Just reset the input and show a brief message
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    const allowedTypes = ['.mp4', '.mov', '.avi', '.mkv', '.webm', '.m4v'];
-    const ext = '.' + file.name.split('.').pop()?.toLowerCase();
-    if (!allowedTypes.includes(ext)) {
-      setError(`Unsupported file type: ${ext}. Allowed: ${allowedTypes.join(', ')}`);
-      return;
-    }
-
-    // Validate file size (200MB max)
-    if (file.size > 200 * 1024 * 1024) {
-      setError('File size exceeds 200MB limit');
-      return;
-    }
-
-    try {
-      setUploading(true);
-      setError(null);
-
-      const formData = new FormData();
-      formData.append('video', file);
-
-      const response = await fetch(`${API_BASE}/api/analyze`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Upload failed');
-      }
-
-      const result = await response.json();
-      
-      // Wait a moment for metadata to be saved, then reload clips list
-      await new Promise(resolve => setTimeout(resolve, 500));
-      await loadClips();
-      
-      // Auto-select the newly uploaded clip by matching video URL
-      if (result.video_url) {
-        const updatedClips = await fetch(`${API_BASE}/api/clips`).then(r => r.json()).then(d => d.clips || []);
-        const newClip = updatedClips.find((c: Clip) => c.videoUrl === result.video_url);
-        if (newClip) {
-          onSelectClip(newClip);
-        }
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed');
-    } finally {
+    // Reset file input immediately
+    event.target.value = '';
+    
+    // Show brief message that uploads take too long
+    setUploading(true);
+    setError('Video upload and analysis takes too long for this demo. Please use the existing clip.');
+    
+    // Clear message after 3 seconds
+    setTimeout(() => {
       setUploading(false);
-      // Reset file input
-      event.target.value = '';
-    }
+      setError(null);
+    }, 3000);
   };
 
   const handleDelete = async (clipId: string, event: React.MouseEvent) => {
@@ -154,8 +117,14 @@ export const ClipList: React.FC<ClipListProps> = ({ onSelectClip, selectedClipId
       </div>
 
       {error && (
-        <div className={styles.error}>
+        <div className={`${styles.error} ${error.includes('takes too long') ? styles.info : ''}`}>
           {error}
+        </div>
+      )}
+
+      {!error && uploading && (
+        <div className={`${styles.error} ${styles.info}`}>
+          Video upload and analysis takes too long for this demo. Please use the existing clip.
         </div>
       )}
 

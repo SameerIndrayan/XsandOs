@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { VideoPlayer } from './components/VideoPlayer';
 import { VoiceQA } from './components/VoiceQA';
+import { ClipList } from './components/ClipList';
 import { backendTestData } from './data/backendTestData';
 import { transformBackendData, extractPlayInfo } from './utils/transformBackendData';
 import './styles/variables.css';
@@ -9,6 +10,7 @@ import './styles/App.css';
 function App() {
   const [videoTime, setVideoTime] = useState(0);
   const [isListening, setIsListening] = useState(false);
+  const [selectedClip, setSelectedClip] = useState<any>(null);
 
   // Transform backend data to frontend format
   const annotations = useMemo(() => transformBackendData(backendTestData), []);
@@ -67,6 +69,15 @@ function App() {
       {/* Main Content */}
       <main className="main">
         <div className="content-wrapper">
+          {/* Clip List with Upload Button */}
+          <ClipList
+            onSelectClip={(clip) => {
+              setSelectedClip(clip);
+              // You can load the clip's annotations here if needed
+            }}
+            selectedClipId={selectedClip?.id}
+          />
+
           {/* Play Title Section */}
           <div className="play-header">
             <div className="play-info">
@@ -159,6 +170,7 @@ function App() {
       <VoiceQA
         videoTimestamp={videoTime}
         onListeningChange={handleListeningChange}
+        playSummary={playInfo.summary}
       />
 
       {/* Footer */}
