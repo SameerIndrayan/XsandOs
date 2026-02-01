@@ -28,7 +28,7 @@ export async function generateQAResponse(
   context: QAContext
 ): Promise<QAResponse> {
   const apiKey = process.env.GEMINI_API_KEY;
-  const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+  const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY not configured');

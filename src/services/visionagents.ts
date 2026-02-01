@@ -27,9 +27,8 @@ export async function analyzeWithVisionAgents(
   // Use GEMINI_API_KEY (Vision Agents uses Gemini under the hood)
   // VISIONAGENTS_API_KEY is kept for compatibility but GEMINI_API_KEY takes precedence
   const apiKey = process.env.GEMINI_API_KEY || process.env.VISIONAGENTS_API_KEY;
-  // Use faster model like googleJAN31 (gemini-2.0-flash-exp is fastest)
-  // Fallback to gemini-1.5-flash if flash-exp not available, then pro
-  const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+  // Use Gemini 2.0 Flash (latest model)
+  const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY not configured (required for Vision Agents integration)');
