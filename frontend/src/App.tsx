@@ -1,7 +1,9 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { VideoPlayer } from './components/video-player';
 import { AIAssistant } from './components/ai-assistant';
 import { askQuestion } from './services/api';
+import { useAnnotationFrames } from './hooks/useAnnotationFrames';
+import { AnnotationData, AnnotationFrame } from './types/annotations';
 import './index.css';
 
 interface PlaySummaryData {
@@ -26,15 +28,6 @@ interface ChatMessage {
   content: string;
 }
 
-interface PlayerAnnotation {
-  id: string;
-  x: number;
-  y: number;
-  color: string;
-  label: string;
-  team: "offense" | "defense";
-}
-
 function App() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -44,7 +37,10 @@ function App() {
   const [playSummary, setPlaySummary] = useState<PlaySummaryData | null>(null);
   const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [annotations, setAnnotations] = useState<PlayerAnnotation[]>([]);
+  const [annotationData, setAnnotationData] = useState<AnnotationData | null>(null);
+
+  // Get interpolated frame for current video time
+  const annotationFrame = useAnnotationFrames(annotationData, currentTime);
 
   // Handle file upload
   const handleFileUpload = useCallback(async (file: File) => {
@@ -57,7 +53,7 @@ function App() {
     setChatMessages([]);
     setPlaySummary(null);
     setTimelineEvents([]);
-    setAnnotations([]);
+    setAnnotationData(null);
 
     try {
       // Upload to backend for analysis
@@ -84,31 +80,55 @@ function App() {
 
         // Create timeline events from frames
         if (data.frames && data.frames.length > 0) {
-          const events: TimelineEvent[] = [
+          const events: TimelineEvent[] = data.frames.map((frame: any, index: number) => ({
+            id: String(index + 1),
+            time: frame.timestamp,
+            label: frame.terminology?.[0]?.term || `Frame ${index + 1}`,
+            type: index === 0 ? 'snap' : index === data.frames.length - 1 ? 'result' : 'action',
+          }));
+          setTimelineEvents(events.length > 0 ? events : [
             { id: '1', time: 0, label: 'Pre-snap formation', type: 'snap' },
             { id: '2', time: 1, label: 'Ball snapped', type: 'action' },
             { id: '3', time: 2, label: 'Play-action fake', type: 'key' },
             { id: '4', time: 3, label: 'Routes developing', type: 'action' },
             { id: '5', time: 4, label: 'Pass released', type: 'key' },
             { id: '6', time: 5, label: 'Catch completed', type: 'result' },
-          ];
-          setTimelineEvents(events);
+          ]);
 
-          // Convert frame annotations to player dots
-          const firstFrame = data.frames[0];
-          if (firstFrame?.players) {
-            const playerAnnotations: PlayerAnnotation[] = firstFrame.players.map((p: any) => ({
-              id: p.id,
-              x: p.x,
-              y: p.y,
+          // Store full annotation data for canvas rendering
+          const frames: AnnotationFrame[] = data.frames.map((frame: any) => ({
+            timestamp: frame.timestamp || 0,
+            players: (frame.players || []).map((p: any) => ({
+              id: p.id || String(Math.random()),
+              x: p.x || 50,
+              y: p.y || 50,
+              label: p.label || 'Player',
+              highlight: p.highlight || false,
               color: p.color || '#6366f1',
-              label: p.label || p.id,
-              team: p.label?.includes('QB') || p.label?.includes('WR') || p.label?.includes('RB')
-                ? 'offense' as const
-                : 'defense' as const,
-            }));
-            setAnnotations(playerAnnotations);
-          }
+            })),
+            arrows: (frame.arrows || []).map((a: any) => ({
+              from: a.from || [0, 0],
+              to: a.to || [0, 0],
+              color: a.color || '#22c55e',
+              label: a.label,
+              dashed: a.dashed || false,
+            })),
+            terminology: (frame.terminology || []).map((t: any) => ({
+              x: t.x || 50,
+              y: t.y || 10,
+              term: t.term || '',
+              definition: t.definition || '',
+              duration: t.duration || 3,
+            })),
+          }));
+
+          setAnnotationData({
+            metadata: {
+              videoWidth: data.video_width,
+              videoHeight: data.video_height,
+            },
+            frames,
+          });
         }
       }
     } catch (error) {
@@ -130,6 +150,65 @@ function App() {
         { id: '5', time: 4, label: 'Pass released', type: 'key' },
         { id: '6', time: 5, label: 'Catch completed', type: 'result' },
       ]);
+
+      // Set mock annotation data for demo
+      setAnnotationData({
+        frames: [
+          {
+            timestamp: 0,
+            players: [
+              { id: 'qb', x: 50, y: 60, label: 'QB #12', highlight: true, color: '#6366f1' },
+              { id: 'rb', x: 45, y: 70, label: 'RB #26', highlight: false, color: '#6366f1' },
+              { id: 'wr1', x: 20, y: 55, label: 'WR #89', highlight: false, color: '#6366f1' },
+              { id: 'wr2', x: 80, y: 55, label: 'WR #11', highlight: false, color: '#6366f1' },
+              { id: 'def1', x: 25, y: 45, label: 'CB', highlight: false, color: '#ef4444' },
+              { id: 'def2', x: 75, y: 45, label: 'CB', highlight: false, color: '#ef4444' },
+              { id: 'def3', x: 50, y: 40, label: 'LB', highlight: false, color: '#ef4444' },
+            ],
+            arrows: [],
+            terminology: [
+              { x: 50, y: 8, term: 'I-Formation', definition: 'QB under center with FB and HB aligned behind', duration: 2 },
+            ],
+          },
+          {
+            timestamp: 2,
+            players: [
+              { id: 'qb', x: 52, y: 55, label: 'QB #12', highlight: true, color: '#6366f1' },
+              { id: 'rb', x: 48, y: 65, label: 'RB #26', highlight: false, color: '#6366f1' },
+              { id: 'wr1', x: 15, y: 40, label: 'WR #89', highlight: true, color: '#6366f1' },
+              { id: 'wr2', x: 85, y: 50, label: 'WR #11', highlight: false, color: '#6366f1' },
+              { id: 'def1', x: 20, y: 35, label: 'CB', highlight: false, color: '#ef4444' },
+              { id: 'def2', x: 80, y: 48, label: 'CB', highlight: false, color: '#ef4444' },
+              { id: 'def3', x: 50, y: 50, label: 'LB', highlight: false, color: '#ef4444' },
+            ],
+            arrows: [
+              { from: [50, 60], to: [48, 65], color: '#f59e0b', label: 'Fake', dashed: true },
+              { from: [20, 55], to: [15, 35], color: '#22c55e', label: 'Post Route' },
+            ],
+            terminology: [
+              { x: 50, y: 8, term: 'Play-Action', definition: 'QB fakes handoff to freeze defenders', duration: 2 },
+            ],
+          },
+          {
+            timestamp: 4,
+            players: [
+              { id: 'qb', x: 55, y: 52, label: 'QB #12', highlight: false, color: '#6366f1' },
+              { id: 'rb', x: 60, y: 60, label: 'RB #26', highlight: false, color: '#6366f1' },
+              { id: 'wr1', x: 12, y: 25, label: 'WR #89', highlight: true, color: '#6366f1' },
+              { id: 'wr2', x: 88, y: 45, label: 'WR #11', highlight: false, color: '#6366f1' },
+              { id: 'def1', x: 18, y: 28, label: 'CB', highlight: false, color: '#ef4444' },
+              { id: 'def2', x: 85, y: 45, label: 'CB', highlight: false, color: '#ef4444' },
+              { id: 'def3', x: 55, y: 55, label: 'LB', highlight: false, color: '#ef4444' },
+            ],
+            arrows: [
+              { from: [55, 52], to: [12, 25], color: '#22c55e', label: 'Pass' },
+            ],
+            terminology: [
+              { x: 50, y: 8, term: 'Completion', definition: 'Pass caught for 15 yard gain', duration: 2 },
+            ],
+          },
+        ],
+      });
     } finally {
       setIsAnalyzing(false);
     }
@@ -170,15 +249,11 @@ function App() {
   // Handle video seek from timeline
   const handleSeek = useCallback((time: number) => {
     setCurrentTime(time);
-    // The VideoPlayer component will pick up the new time
   }, []);
 
   // Handle time updates from video
   const handleTimeUpdate = useCallback((time: number) => {
     setCurrentTime(time);
-
-    // Update annotations based on current time (simplified)
-    // In a full implementation, you'd interpolate between frame data
   }, []);
 
   return (
@@ -212,7 +287,7 @@ function App() {
             onFileUpload={handleFileUpload}
             currentTime={currentTime}
             onTimeUpdate={handleTimeUpdate}
-            annotations={annotations}
+            annotationFrame={annotationFrame}
           />
         </div>
       </div>

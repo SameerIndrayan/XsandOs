@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-
 import { useState, useRef, useEffect, useCallback } from "react"
 import {
   Play,
@@ -16,27 +15,15 @@ import {
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-interface PlayerAnnotation {
-  id: string
-  x: number
-  y: number
-  color: string
-  label: string
-  team: "offense" | "defense"
-}
+import { InterpolatedFrame } from '../types/annotations'
+import { renderPlayers, renderArrows, renderTerminology } from '../renderers'
+import { useCanvasResize } from '../hooks/useCanvasResize'
 
 interface VideoPlayerProps {
   videoUrl: string | null
@@ -44,7 +31,7 @@ interface VideoPlayerProps {
   onFileUpload: (file: File) => void
   currentTime: number
   onTimeUpdate: (time: number) => void
-  annotations?: PlayerAnnotation[]
+  annotationFrame?: InterpolatedFrame | null
 }
 
 export function VideoPlayer({
@@ -53,18 +40,71 @@ export function VideoPlayer({
   onFileUpload,
   currentTime,
   onTimeUpdate,
-  annotations = [],
+  annotationFrame = null,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const videoContainerRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const animationTimeRef = useRef(Date.now())
+
   const [isPlaying, setIsPlaying] = useState(false)
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(1)
   const [isMuted, setIsMuted] = useState(false)
   const [showAnnotations, setShowAnnotations] = useState(true)
   const [playbackSpeed, setPlaybackSpeed] = useState("1")
-  const [hoveredPlayer, setHoveredPlayer] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+
+  // Use the canvas resize hook to handle dimensions
+  const dimensions = useCanvasResize(videoContainerRef, videoRef, canvasRef)
+
+  // Render annotations on canvas
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    // Only render if we have annotation data and annotations are visible
+    if (showAnnotations && annotationFrame) {
+      animationTimeRef.current = Date.now()
+      // Render each annotation type (order matters for layering)
+      renderArrows(ctx, annotationFrame.arrows, dimensions)
+      renderPlayers(ctx, annotationFrame.players, dimensions, animationTimeRef.current)
+      renderTerminology(ctx, annotationFrame.terminology, dimensions)
+    }
+  }, [annotationFrame, dimensions, showAnnotations])
+
+  // Animation loop for highlighted players (pulsing effect)
+  useEffect(() => {
+    if (!showAnnotations || !annotationFrame) return
+
+    // Only run animation loop if there are highlighted players
+    const hasHighlighted = annotationFrame.players.some(p => p.highlight)
+    if (!hasHighlighted) return
+
+    let animationId: number
+    const animate = () => {
+      const canvas = canvasRef.current
+      const ctx = canvas?.getContext('2d')
+      if (ctx && canvas && annotationFrame) {
+        animationTimeRef.current = Date.now()
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        renderArrows(ctx, annotationFrame.arrows, dimensions)
+        renderPlayers(ctx, annotationFrame.players, dimensions, animationTimeRef.current)
+        renderTerminology(ctx, annotationFrame.terminology, dimensions)
+      }
+      animationId = requestAnimationFrame(animate)
+    }
+
+    animationId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animationId)
+  }, [annotationFrame, dimensions, showAnnotations])
 
   useEffect(() => {
     const video = videoRef.current
@@ -257,8 +297,8 @@ export function VideoPlayer({
       ref={containerRef}
       className="group relative flex h-full w-full flex-col overflow-hidden rounded-xl bg-card"
     >
-      {/* Video */}
-      <div className="relative flex-1">
+      {/* Video Container with Canvas Overlay */}
+      <div ref={videoContainerRef} className="relative flex-1">
         <video
           ref={videoRef}
           src={videoUrl}
@@ -266,35 +306,13 @@ export function VideoPlayer({
           onClick={togglePlay}
         />
 
-        {/* Player Annotations Overlay */}
-        {showAnnotations && annotations.length > 0 && (
-          <TooltipProvider>
-            <div className="absolute inset-0 pointer-events-none">
-              {annotations.map((player) => (
-                <Tooltip key={player.id} open={hoveredPlayer === player.id}>
-                  <TooltipTrigger asChild>
-                    <div
-                      className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full border-2 border-foreground/50 transition-transform hover:scale-125 pointer-events-auto"
-                      style={{
-                        left: `${player.x}%`,
-                        top: `${player.y}%`,
-                        backgroundColor: player.color,
-                      }}
-                      onMouseEnter={() => setHoveredPlayer(player.id)}
-                      onMouseLeave={() => setHoveredPlayer(null)}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="top"
-                    className="bg-card text-card-foreground border-border"
-                  >
-                    <p className="font-medium">{player.label}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-          </TooltipProvider>
-        )}
+        {/* Canvas Annotation Overlay */}
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 pointer-events-none"
+          style={{ opacity: showAnnotations ? 1 : 0 }}
+          aria-hidden="true"
+        />
 
         {/* Analyzing Overlay */}
         {isAnalyzing && (
