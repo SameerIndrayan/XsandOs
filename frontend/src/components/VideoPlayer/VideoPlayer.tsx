@@ -4,11 +4,13 @@ import { TermsButton } from '../TermsButton';
 import { TermsDrawer } from '../TermsDrawer';
 import { PlayTermsButton } from '../PlayTermsButton';
 import { PlayTermsModal } from '../PlayTermsModal';
+import { FilterControls } from '../FilterControls';
 import { useCanvasResize } from '../../hooks/useCanvasResize';
 import { useAnnotationFrames } from '../../hooks/useAnnotationFrames';
-import { AnnotationData, InterpolatedFrame, TerminologyAnnotation, PlayerAnnotation, ArrowAnnotation } from '../../types/annotations';
-import { BroadcastOverlayManager } from '../../utils/broadcastOverlayManager';
+import { AnnotationData, InterpolatedFrame, TerminologyAnnotation } from '../../types/annotations';
 import { extractPlayTerms } from '../../utils/playTermsExtractor';
+import { AnnotationFilters, DEFAULT_FILTERS } from '../../types/filters';
+import { applyFilters } from '../../utils/annotationFilters';
 import styles from './VideoPlayer.module.css';
 
 interface VideoPlayerProps {
@@ -45,6 +47,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [isTermsDrawerOpen, setIsTermsDrawerOpen] = useState(false);
   const [learnMode, setLearnMode] = useState(false); // Learn mode toggle for terminology popups
   const [isPlayTermsModalOpen, setIsPlayTermsModalOpen] = useState(false);
+  const [filters, setFilters] = useState<AnnotationFilters>(DEFAULT_FILTERS);
 
   // Canvas dimensions for annotation positioning
   const dimensions = useCanvasResize(playerWrapperRef, videoRef, canvasRef);
@@ -52,68 +55,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // Get interpolated annotation frame for current time
   const rawFrame = useAnnotationFrames(annotations, currentTime);
 
-  // Initialize broadcast overlay manager (persist across renders)
-  const broadcastManager = useMemo(() => {
-    return new BroadcastOverlayManager();
-  }, []);
-
-  // Filter frame using broadcast overlay manager (NFL-style minimal overlays)
+  // Apply user-controlled filters to the frame
   const frame = useMemo((): InterpolatedFrame | null => {
-    if (!rawFrame || !annotations?.frames) return null;
-
-    // Apply broadcast overlay filtering to rawFrame data
-    // The manager will filter to only key actors, top arrows, and top callouts
-    const filtered = broadcastManager.filterFrame(
-      rawFrame.players as PlayerAnnotation[],
-      rawFrame.arrows as ArrowAnnotation[],
-      rawFrame.terminology as TerminologyAnnotation[],
-      learnMode
-    );
-
-    // Convert filtered players back to InterpolatedPlayer format (preserve opacity)
-    const filteredPlayers = filtered.players.map(p => {
-      const originalPlayer = rawFrame.players.find(rp => rp.id === p.id);
-      return {
-        ...p,
-        opacity: originalPlayer?.opacity ?? 1,
-      };
-    });
-
-    // Convert filtered arrows back to InterpolatedArrow format (preserve opacity)
-    const filteredArrows = filtered.arrows.map(a => {
-      const originalArrow = rawFrame.arrows.find(ra => 
-        Math.abs(ra.from[0] - a.from[0]) < 0.1 &&
-        Math.abs(ra.from[1] - a.from[1]) < 0.1 &&
-        Math.abs(ra.to[0] - a.to[0]) < 0.1 &&
-        Math.abs(ra.to[1] - a.to[1]) < 0.1
-      );
-      return {
-        ...a,
-        opacity: originalArrow?.opacity ?? 1,
-        dashed: originalArrow?.dashed,
-      };
-    });
-
-    // Convert filtered terminology back to InterpolatedTerminology format
-    const filteredTerminology = filtered.terminology.map(t => {
-      const originalTerm = rawFrame.terminology.find(rt => 
-        rt.term === t.term &&
-        Math.abs(rt.x - t.x) < 0.1 &&
-        Math.abs(rt.y - t.y) < 0.1
-      );
-      return {
-        ...t,
-        opacity: originalTerm?.opacity ?? 1,
-        startTime: originalTerm?.startTime ?? currentTime,
-      };
-    });
-
-    return {
-      players: filteredPlayers,
-      arrows: filteredArrows,
-      terminology: filteredTerminology,
-    };
-  }, [rawFrame, annotations, currentTime, broadcastManager, learnMode]);
+    if (!rawFrame) return null;
+    return applyFilters(rawFrame, filters);
+  }, [rawFrame, filters]);
 
   // Get all terms for current frame (for drawer)
   const allTermsForCurrentFrame = useMemo((): TerminologyAnnotation[] => {
@@ -343,12 +289,17 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Note: BroadcastOverlayManager is stateless, no reset needed
-
   const playbackRates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
 
   return (
     <div ref={containerRef} className={styles.container}>
+      {/* Filter Controls */}
+      <FilterControls
+        filters={filters}
+        onFiltersChange={setFilters}
+        currentFrame={rawFrame}
+      />
+
       <div ref={playerWrapperRef} className={styles.playerWrapper}>
         <video
           ref={videoRef}

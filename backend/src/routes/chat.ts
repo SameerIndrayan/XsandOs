@@ -15,8 +15,33 @@ const ChatRequestSchema = z.object({
 });
 
 /**
+ * Mock responses for testing without API key
+ */
+const getMockResponse = (question: string, timestamp: number, playSummary?: string): string => {
+  const q = question.toLowerCase();
+  
+  if (q.includes('formation')) {
+    return `At ${timestamp.toFixed(1)} seconds, we're seeing a classic shotgun formation. The quarterback is positioned about 5 yards behind the center, giving him more time to read the defense. This is a common setup for passing plays, especially on 3rd down situations.`;
+  }
+  if (q.includes('route') || q.includes('receiver')) {
+    return `The receivers are running a combination of routes here. The outside receiver appears to be running a go route or fade, while the slot receiver might be running a crossing route. This creates spacing and forces the defense to make decisions.`;
+  }
+  if (q.includes('defense') || q.includes('coverage')) {
+    return `The defense looks like they're in a zone coverage scheme, likely Cover 2 or Cover 3. You can tell by how the defensive backs are positioned and their responsibilities. They're reading the quarterback's eyes to react to the throw.`;
+  }
+  if (q.includes('blitz') || q.includes('pressure')) {
+    return `Good question! The defense is showing a potential blitz look with linebackers creeping toward the line. This puts pressure on the offense to identify who's coming and adjust their protection accordingly.`;
+  }
+  if (q.includes('play action') || q.includes('fake')) {
+    return `That's a play-action fake! The quarterback fakes a handoff to the running back, trying to freeze the linebackers and safeties. This creates opportunities for receivers downfield as defenders hesitate.`;
+  }
+  
+  return `Great question about the play at ${timestamp.toFixed(1)} seconds! ${playSummary ? `Based on the play summary, ${playSummary.split('.')[0].toLowerCase()}.` : ''} This is a key moment where you can see how offensive and defensive strategies clash. The quarterback is reading the defense and making split-second decisions.`;
+};
+
+/**
  * POST /api/chat
- * Chat endpoint for AI assistant using Gemini
+ * Chat endpoint for AI assistant using Gemini (with mock mode fallback)
  */
 router.post('/chat', async (req: Request, res: Response) => {
   try {
@@ -24,6 +49,19 @@ router.post('/chat', async (req: Request, res: Response) => {
     const { question, videoTimestamp, conversationHistory = [], playSummary } = body;
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.VISIONAGENTS_API_KEY;
+    const useMockMode = process.env.CHAT_MOCK_MODE === '1' || !apiKey || apiKey === 'your_gemini_api_key_here';
+    
+    // If in mock mode, return mock response immediately
+    if (useMockMode) {
+      console.log('[CHAT] Using mock mode for question:', question);
+      const mockResponse = getMockResponse(question, videoTimestamp, playSummary);
+      return res.json({
+        response: mockResponse,
+        timestamp: videoTimestamp,
+        mock: true,
+      });
+    }
+    
     if (!apiKey) {
       return res.status(500).json({
         error: 'GEMINI_API_KEY not configured',
