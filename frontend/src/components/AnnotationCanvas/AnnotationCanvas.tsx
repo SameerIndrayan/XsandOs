@@ -1,6 +1,6 @@
 import { useRef, useEffect, RefObject } from 'react';
 import { InterpolatedFrame, CanvasDimensions } from '../../types/annotations';
-import { renderPlayers, renderArrows, renderTerminology } from '../../renderers';
+import { renderPlayers, renderArrows, renderTerminology, renderEditorialCallouts } from '../../renderers';
 import styles from './AnnotationCanvas.module.css';
 
 interface AnnotationCanvasProps {
@@ -44,6 +44,10 @@ export const AnnotationCanvas: React.FC<AnnotationCanvasProps> = ({
     renderArrows(ctx, frame.arrows, dimensions);
     renderPlayers(ctx, frame.players, dimensions, animationTimeRef.current);
     renderTerminology(ctx, frame.terminology, dimensions);
+    // Render callouts on top of everything
+    if (frame.callouts && frame.callouts.length > 0) {
+      renderEditorialCallouts(ctx, frame.callouts, dimensions);
+    }
   }, [canvasRef, frame, dimensions, visible]);
 
   return (

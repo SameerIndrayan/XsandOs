@@ -1,4 +1,4 @@
-import { InterpolatedFrame, InterpolatedPlayer, InterpolatedArrow, InterpolatedTerminology } from '../types/annotations';
+import { InterpolatedFrame, InterpolatedPlayer, InterpolatedArrow, InterpolatedTerminology, EditorialCallout } from '../types/annotations';
 import { AnnotationFilters } from '../types/filters';
 
 /**
@@ -163,6 +163,26 @@ const filterTerminology = (
 };
 
 /**
+ * Filter callouts based on settings
+ */
+const filterCallouts = (
+  callouts: EditorialCallout[],
+  filters: AnnotationFilters
+): EditorialCallout[] => {
+  if (!filters.showCallouts) {
+    return [];
+  }
+  
+  // Callouts are always high priority, so only filter them out in critical mode
+  // where we show absolutely minimal annotations
+  if (filters.priorityLevel === 'critical') {
+    return [];
+  }
+  
+  return callouts;
+};
+
+/**
  * Apply filters to an interpolated frame
  */
 export const applyFilters = (
@@ -173,6 +193,7 @@ export const applyFilters = (
     players: filterPlayers(frame.players, filters),
     arrows: filterArrows(frame.arrows, filters),
     terminology: filterTerminology(frame.terminology, filters),
+    callouts: filterCallouts(frame.callouts || [], filters),
   };
 };
 
@@ -183,9 +204,9 @@ export const getFilterStats = (
   frame: InterpolatedFrame,
   filters: AnnotationFilters
 ): { total: number; shown: number; hidden: number } => {
-  const total = frame.players.length + frame.arrows.length + frame.terminology.length;
+  const total = frame.players.length + frame.arrows.length + frame.terminology.length + (frame.callouts?.length || 0);
   const filtered = applyFilters(frame, filters);
-  const shown = filtered.players.length + filtered.arrows.length + filtered.terminology.length;
+  const shown = filtered.players.length + filtered.arrows.length + filtered.terminology.length + (filtered.callouts?.length || 0);
   
   return {
     total,

@@ -15,11 +15,16 @@ export const useAnnotationFrames = (
     return [...annotations.frames].sort((a, b) => a.timestamp - b.timestamp);
   }, [annotations]);
 
-  // Get interpolated frame for current time
+  // Extract callouts
+  const callouts = useMemo(() => {
+    return annotations?.callouts || [];
+  }, [annotations]);
+
+  // Get interpolated frame for current time (including time-filtered callouts)
   const interpolatedFrame = useMemo(() => {
     if (sortedFrames.length === 0) return null;
-    return getInterpolatedFrame(sortedFrames, currentTime);
-  }, [sortedFrames, currentTime]);
+    return getInterpolatedFrame(sortedFrames, currentTime, callouts);
+  }, [sortedFrames, currentTime, callouts]);
 
   return interpolatedFrame;
 };

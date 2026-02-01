@@ -7,6 +7,7 @@ import {
   PlayerAnnotation,
   ArrowAnnotation,
   TerminologyAnnotation,
+  EditorialCallout,
 } from '../types/annotations';
 
 /**
@@ -149,8 +150,8 @@ const interpolateArrows = (
 
 /**
  * Select which terminology boxes to show based on duration
- * NOTE: This is now handled by TerminologyOverlayManager in the VideoPlayer component
- * This function is kept for backward compatibility but should not be used for terminology selection
+ * Key insight: Each terminology should persist from when it first appears
+ * until its duration expires, regardless of frame transitions
  */
 const selectTerminology = (
   before: TerminologyAnnotation[],
@@ -159,46 +160,62 @@ const selectTerminology = (
   currentTime: number,
   beforeTimestamp: number
 ): InterpolatedTerminology[] => {
-  // Legacy implementation - now terminology is managed by TerminologyOverlayManager
-  // This is only used as a fallback
   const result: InterpolatedTerminology[] = [];
   const fadeTime = 0.3;
-
+  
+  // Collect all active terminology from BEFORE frame
+  // Each term persists from its frame's timestamp for its duration
   for (const term of before) {
-    const startTime = beforeTimestamp;
-    const termDuration = term.duration ?? 4; // Default duration if not specified
-    const endTime = startTime + termDuration;
-
-    if (currentTime <= endTime) {
+    const termStart = beforeTimestamp; // This term started showing at this frame
+    const termDuration = term.duration ?? 5;
+    const termEnd = termStart + termDuration;
+    
+    // Check if this term should still be visible at current time
+    if (currentTime >= termStart && currentTime <= termEnd) {
       let opacity = 1;
-      if (currentTime < startTime + fadeTime) {
-        opacity = (currentTime - startTime) / fadeTime;
-      } else if (currentTime > endTime - fadeTime) {
-        opacity = (endTime - currentTime) / fadeTime;
+      
+      // Fade in
+      if (currentTime < termStart + fadeTime) {
+        opacity = (currentTime - termStart) / fadeTime;
       }
+      // Fade out
+      else if (currentTime > termEnd - fadeTime) {
+        opacity = (termEnd - currentTime) / fadeTime;
+      }
+      
       opacity = Math.max(0, Math.min(1, opacity));
-      result.push({ ...term, opacity, startTime });
+      result.push({ ...term, opacity, startTime: termStart });
     }
   }
-
-  for (const term of after) {
-    const exists = before.some((b) => b.term === term.term);
-    if (!exists && t > 0.3) {
-      result.push({ ...term, opacity: Math.min(1, (t - 0.3) / 0.3), startTime: currentTime });
-    }
-  }
-
+  
+  // DON'T add terms from "after" frame yet - they'll be picked up
+  // when "after" becomes "before" in the next interpolation cycle
+  // This prevents premature appearance and flickering
+  
   return result;
+};
+
+/**
+ * Filter callouts by current time (they are time-based, not frame-based)
+ */
+const filterCalloutsByTime = (
+  callouts: EditorialCallout[],
+  currentTime: number
+): EditorialCallout[] => {
+  return callouts.filter(
+    callout => currentTime >= callout.start_time && currentTime <= callout.end_time
+  );
 };
 
 /**
  * Convert a single frame to interpolated format (for edge cases)
  */
-export const frameToInterpolated = (frame: AnnotationFrame): InterpolatedFrame => {
+export const frameToInterpolated = (frame: AnnotationFrame, allCallouts: EditorialCallout[] = [], currentTime: number = 0): InterpolatedFrame => {
   return {
     players: frame.players.map((p) => ({ ...p, opacity: 1 })),
     arrows: frame.arrows.map((a) => ({ ...a, opacity: 1 })),
     terminology: frame.terminology.map((t) => ({ ...t, opacity: 1, startTime: frame.timestamp })),
+    callouts: filterCalloutsByTime(allCallouts, currentTime),
   };
 };
 
@@ -209,7 +226,8 @@ export const interpolateFrame = (
   before: AnnotationFrame,
   after: AnnotationFrame,
   t: number,
-  currentTime: number
+  currentTime: number,
+  allCallouts: EditorialCallout[] = []
 ): InterpolatedFrame => {
   return {
     players: interpolatePlayers(before.players, after.players, t),
@@ -221,23 +239,72 @@ export const interpolateFrame = (
       currentTime,
       before.timestamp
     ),
+    callouts: filterCalloutsByTime(allCallouts, currentTime),
   };
 };
 
 /**
  * Get the interpolated frame for a given time
+ * Now collects ALL active terminology from all frames
  */
 export const getInterpolatedFrame = (
   frames: AnnotationFrame[],
-  currentTime: number
+  currentTime: number,
+  allCallouts: EditorialCallout[] = []
 ): InterpolatedFrame | null => {
   if (frames.length === 0) return null;
 
   const { before, after, t } = findBracketingFrames(frames, currentTime);
 
   if (!before && !after) return null;
-  if (!before) return frameToInterpolated(after!);
-  if (!after) return frameToInterpolated(before);
-
-  return interpolateFrame(before, after, t, currentTime);
+  
+  // Get base interpolated frame (players and arrows)
+  let baseFrame: InterpolatedFrame;
+  if (!before) {
+    baseFrame = frameToInterpolated(after!, allCallouts, currentTime);
+  } else if (!after) {
+    baseFrame = frameToInterpolated(before, allCallouts, currentTime);
+  } else {
+    baseFrame = interpolateFrame(before, after, t, currentTime, allCallouts);
+  }
+  
+  // Now collect ALL active terminology from ALL frames (not just current interpolation pair)
+  const activeTerminology: InterpolatedTerminology[] = [];
+  const seenTerms = new Set<string>();
+  const fadeTime = 0.3;
+  
+  for (const frame of frames) {
+    for (const term of frame.terminology) {
+      // Skip if we've already added this term
+      if (seenTerms.has(term.term)) continue;
+      
+      const termStart = frame.timestamp;
+      const termDuration = term.duration ?? 5;
+      const termEnd = termStart + termDuration;
+      
+      // Check if this term should be visible at current time
+      if (currentTime >= termStart && currentTime <= termEnd) {
+        let opacity = 1;
+        
+        // Fade in
+        if (currentTime < termStart + fadeTime) {
+          opacity = (currentTime - termStart) / fadeTime;
+        }
+        // Fade out
+        else if (currentTime > termEnd - fadeTime) {
+          opacity = (termEnd - currentTime) / fadeTime;
+        }
+        
+        opacity = Math.max(0, Math.min(1, opacity));
+        activeTerminology.push({ ...term, opacity, startTime: termStart });
+        seenTerms.add(term.term);
+      }
+    }
+  }
+  
+  // Replace the terminology with our collected active terms
+  return {
+    ...baseFrame,
+    terminology: activeTerminology,
+  };
 };

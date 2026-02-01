@@ -38,9 +38,10 @@ export function transformBackendData(
         y: term.y,
         term: term.term,
         definition: term.definition,
-        duration: 2.0, // Default duration for backend data
+        duration: 3.0, // 3 seconds - enough to read without cluttering
       })),
     })),
+    callouts: backendData.callouts || [], // Pass through time-based callouts
   };
 }
 

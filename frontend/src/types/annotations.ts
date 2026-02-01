@@ -39,6 +39,7 @@ export interface AnnotationData {
     frameRate?: number;
   };
   frames: AnnotationFrame[];
+  callouts?: EditorialCallout[]; // Time-based callouts separate from frames
 }
 
 // Interpolated types for rendering
@@ -59,6 +60,7 @@ export interface InterpolatedFrame {
   players: InterpolatedPlayer[];
   arrows: InterpolatedArrow[];
   terminology: InterpolatedTerminology[];
+  callouts: EditorialCallout[]; // Time-based callouts (not interpolated)
 }
 
 // Canvas coordinate types
