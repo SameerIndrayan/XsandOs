@@ -39,7 +39,6 @@ export interface AnnotationData {
     frameRate?: number;
   };
   frames: AnnotationFrame[];
-  callouts: EditorialCallout[]; // Time-based editorial callouts (max 3)
 }
 
 // Interpolated types for rendering
@@ -123,5 +122,5 @@ export interface BackendAnnotationResponse {
   video_url: string;
   play_summary: string;
   frames: BackendFrame[];
-  callouts: EditorialCallout[];
+  callouts?: EditorialCallout[];
 }

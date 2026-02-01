@@ -195,22 +195,4 @@ export const mockAnnotations: AnnotationData = {
       terminology: [],
     },
   ],
-  callouts: [
-    {
-      id: 'callout_1',
-      start_time: 1.0,
-      end_time: 4.5,
-      text: 'Pursuit',
-      detail: 'Defensive pursuit angle cuts off the running lane, forcing the ball carrier inside.',
-      anchor: { x: 65, y: 55 },
-    },
-    {
-      id: 'callout_2',
-      start_time: 5.0,
-      end_time: 8.5,
-      text: 'Downfield Blocking',
-      detail: 'Wide receiver seals the edge, creating space for the ball carrier.',
-      anchor: { x: 70, y: 45 },
-    },
-  ],
 };

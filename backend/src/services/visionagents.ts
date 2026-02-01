@@ -198,9 +198,7 @@ Return ONLY valid JSON, no markdown, no code blocks, no explanations.`;
   // Generate editorial callouts (time-based, not frame-based)
   let callouts: EditorialCallout[] = [];
   try {
-    console.log('Generating editorial callouts...');
     callouts = await generateEditorialCallouts(frames, allFrames, videoMeta, playSummary);
-    console.log(`Generated ${callouts.length} editorial callouts:`, callouts.map(c => ({ id: c.id, text: c.text })));
   } catch (error) {
     console.error('Error generating editorial callouts:', error);
     // Continue without callouts rather than failing

@@ -1,0 +1,136 @@
+.clipList {
+  background: var(--color-bg-secondary, #1e293b);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary, #f1f5f9);
+  margin: 0;
+}
+
+.uploadButton {
+  background: var(--gradient-primary, linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%));
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  display: inline-block;
+}
+
+.uploadButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.uploadButton:active {
+  transform: translateY(0);
+}
+
+.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-secondary, #94a3b8);
+}
+
+.empty p {
+  margin: 8px 0;
+}
+
+.clips {
+  display: grid;
+  gap: 12px;
+}
+
+.clipCard {
+  background: var(--color-bg-tertiary, #0f172a);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+
+.clipCard:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  background: var(--color-bg-hover, #1e293b);
+}
+
+.clipCard.selected {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.clipInfo {
+  flex: 1;
+}
+
+.clipName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary, #f1f5f9);
+  margin: 0 0 8px 0;
+}
+
+.clipMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-secondary, #94a3b8);
+  margin-bottom: 8px;
+}
+
+.clipSummary {
+  font-size: 14px;
+  color: var(--color-text-secondary, #94a3b8);
+  margin: 8px 0 0 0;
+  line-height: 1.5;
+}
+
+.deleteButton {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.deleteButton:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #f87171;
+}
